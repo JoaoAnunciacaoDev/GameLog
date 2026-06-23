@@ -1,8 +1,8 @@
-"""Criando tabelas iniciais
+"""initial schema
 
-Revision ID: 2d16f40d52ee
+Revision ID: 7b362c64c7fc
 Revises: 
-Create Date: 2026-06-22 20:18:55.068960
+Create Date: 2026-06-23 16:38:42.712700
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2d16f40d52ee'
+revision: str = '7b362c64c7fc'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,6 +26,9 @@ def upgrade() -> None:
     sa.Column('external_id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
     sa.Column('cover_url', sa.String(), nullable=True),
+    sa.Column('release_year', sa.Integer(), nullable=True),
+    sa.Column('platforms', sa.String(), nullable=True),
+    sa.Column('genres', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_games_external_id'), 'games', ['external_id'], unique=True)
@@ -40,7 +43,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('tierlists',
     sa.Column('id', sa.String(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.String(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
@@ -59,16 +62,17 @@ def upgrade() -> None:
     )
     op.create_table('tier_categories',
     sa.Column('id', sa.String(), nullable=False),
-    sa.Column('tierlist_id', sa.Integer(), nullable=False),
+    sa.Column('tierlist_id', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('order_index', sa.Integer(), nullable=False),
+    sa.Column('color', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['tierlist_id'], ['tierlists.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('tier_items',
     sa.Column('id', sa.String(), nullable=False),
-    sa.Column('category_id', sa.Integer(), nullable=False),
-    sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('category_id', sa.String(), nullable=False),
+    sa.Column('game_id', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['tier_categories.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
