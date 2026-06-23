@@ -83,3 +83,11 @@
   font-size: 14px;
   resize: vertical;
 }
+
+.ratingGrid {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}

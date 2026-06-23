@@ -44,24 +44,48 @@ export default function GameEditModal({
   const [notes, setNotes] = useState<string>(initialNotes ?? '');
   const [isSaving, setIsSaving] = useState(false);
 
+  const canReview = status !== 'Quero Jogar';
+
+  const handleStatusChange = (newStatus: string) => {
+    setStatus(newStatus);
+
+    if (newStatus === 'Quero Jogar') {
+      setRating(null);
+      setPlayedYear(null);
+      setNotes('');
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    await onSave({
-      status,
-      rating,
-      played_year: playedYear,
-      notes: notes || null,
-    });
-    setIsSaving(false);
+
+    try {
+      await onSave({
+        status,
+        rating: canReview ? rating : null,
+        played_year: canReview ? playedYear : null,
+        notes: canReview ? (notes || null) : null,
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+        <button className={styles.closeButton} onClick={onClose}>
+          ✕
+        </button>
 
         <div className={styles.gameInfo}>
-          {coverUrl && <img src={coverUrl} alt={title} className={styles.cover} />}
+          {coverUrl && (
+            <img
+              src={coverUrl}
+              alt={title}
+              className={styles.cover}
+            />
+          )}
           <h2 className={styles.title}>{title}</h2>
         </div>
 
@@ -71,51 +95,56 @@ export default function GameEditModal({
             <select
               className={styles.select}
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => handleStatusChange(e.target.value)}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
             </select>
           </label>
 
-          <label className={styles.label}>
-            Nota (0-10)
-            <input
-              type="number"
-              className={styles.input}
-              min={0}
-              max={10}
-              value={rating ?? ''}
-              onChange={(e) => setRating(e.target.value ? Number(e.target.value) : null)}
-            />
-          </label>
+          {canReview && (
+            <>
+              <label className={styles.label}>
+                Sua nota
 
-          <label className={styles.label}>
-            Ano jogado
-            <input
-              type="number"
-              className={styles.input}
-              min={1970}
-              max={new Date().getFullYear()}
-              value={playedYear ?? ''}
-              onChange={(e) => setPlayedYear(e.target.value ? Number(e.target.value) : null)}
-            />
-          </label>
+                <div className={styles.ratingGrid}>
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
+                    <button
+                        key={value}
+                        type="button"
+                        className={`${styles.ratingButton} ${
+                        rating === value ? styles.ratingButtonActive : ''
+                        }`}
+                        onClick={() => setRating(value)}
+                    >
+                        {value}
+                    </button>
+                    ))}
+                </div>
+                </label>
 
-          <label className={styles.label}>
-            Comentário
-            <textarea
-              className={styles.textarea}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Escreva um comentário opcional..."
-              rows={3}
-            />
-          </label>
+              <label className={styles.label}>
+                Comentário
+                <textarea
+                  className={styles.textarea}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Escreva um comentário opcional..."
+                  rows={3}
+                />
+              </label>
+            </>
+          )}
         </div>
 
-        <Button onClick={handleSave} fullWidth disabled={isSaving}>
+        <Button
+          onClick={handleSave}
+          fullWidth
+          disabled={isSaving}
+        >
           {isSaving ? 'Salvando...' : 'Salvar'}
         </Button>
       </div>
