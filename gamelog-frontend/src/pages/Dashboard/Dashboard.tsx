@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../hooks/useToast';
+
 import api from '../../services/api';
+
 import SearchBar from '../../components/SearchBar/SearchBar';
 import GameCard from '../../components/GameCard/GameCard';
 import GameGrid from '../../components/GameGrid/GameGrid';
 import GameModal from '../../components/GameModal/GameModal';
+import Toast from '../../components/Toast/Toast';
+
 import styles from './Dashboard.module.css';
 
 interface GameResult {
@@ -23,15 +28,7 @@ export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [addedGames, setAddedGames] = useState<Set<number>>(new Set());
   const [selectedGame, setSelectedGame] = useState<GameResult | null>(null);
-
-  const handleAddGame = async (game: GameResult) => {
-    try {
-      await api.post('/library/', { external_id: game.external_id });
-      setAddedGames(prev => new Set(prev).add(game.external_id));
-    } catch {
-      alert('Erro ao adicionar jogo.');
-    }
-  };
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -39,13 +36,23 @@ export default function Dashboard() {
     else setLoadingAuth(false);
   }, [navigate]);
 
+  const handleAddGame = async (game: GameResult) => {
+    try {
+      await api.post('/library/', { external_id: game.external_id });
+      setAddedGames(prev => new Set(prev).add(game.external_id));
+      showToast('Jogo adicionado à biblioteca!', 'success');
+    } catch {
+      showToast('Erro ao adicionar jogo.', 'error');
+    }
+  };
+
   const handleSearch = async (query: string) => {
     setIsSearching(true);
     try {
       const response = await api.get(`/games/search?q=${query}`);
       setSearchResults(response.data.results || response.data);
     } catch {
-      alert('Não foi possível buscar os jogos.');
+      showToast('Não foi possível buscar os jogos.', 'error');
     } finally {
       setIsSearching(false);
     }
@@ -94,6 +101,13 @@ export default function Dashboard() {
         } : null}
         onClose={() => setSelectedGame(null)}
       />
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
     </div>
   );
 }
