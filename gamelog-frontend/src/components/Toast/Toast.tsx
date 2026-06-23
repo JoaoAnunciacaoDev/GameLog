@@ -17,7 +17,7 @@ export default function Toast({ message, type = 'info', onClose, duration = 3000
   return (
     <div className={`${styles.toast} ${styles[type]}`}>
       <span>{message}</span>
-      <button className={styles.closeButton} onClick={onClose}>✕</button>
+      <button className={styles.closeButton} onClick={onClose}>X</button>
     </div>
   );
 }
