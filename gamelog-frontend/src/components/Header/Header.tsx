@@ -8,9 +8,12 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <span className={styles.logo} onClick={() => navigate('/')}>
-        GameLog 🎮
+        GameLog
       </span>
       <nav className={styles.nav}>
+        <Button variant="ghost" onClick={() => navigate('/library')}>
+          Biblioteca
+        </Button>
         <Button variant="ghost" onClick={() => navigate('/login')}>
           Entrar
         </Button>

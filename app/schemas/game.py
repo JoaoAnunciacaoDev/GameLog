@@ -53,3 +53,19 @@ class UserGameResponse(UserGameBase):
     external_id: int
     
     model_config = ConfigDict(from_attributes=True)
+
+
+class LibraryGameResponse(BaseModel):
+    id: str
+    user_id: str
+    game_id: str
+    external_id: int
+    title: str
+    cover_url: Optional[str] = None
+    release_year: Optional[int] = None
+    rating: Optional[int] = None
+    status: str
+    played_year: Optional[int] = None
+    notes: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
