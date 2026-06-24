@@ -5,7 +5,8 @@ interface Props {
   coverUrl: string | null;
   status: string;
   rating: number | null;
-  playedYear: number | null;
+  startedAt: string | null;
+  finishedAt: string | null; 
   onClick: () => void;
 }
 
@@ -18,7 +19,13 @@ const STATUS_COLORS: Record<string, string> = {
   'Em Espera':   '#fd7e14',
 };
 
-export default function LibraryCard({ title, coverUrl, status, rating, playedYear, onClick }: Props) {
+export default function LibraryCard({ title, coverUrl, status, rating, startedAt, finishedAt, onClick }: Props) {
+  const year = finishedAt
+    ? new Date(finishedAt).getFullYear()
+    : startedAt
+    ? new Date(startedAt).getFullYear()
+    : null;
+
   return (
     <div className={styles.card} onClick={onClick}>
       <div className={styles.imageWrapper}>
@@ -40,7 +47,7 @@ export default function LibraryCard({ title, coverUrl, status, rating, playedYea
         <h3 className={styles.title}>{title}</h3>
         <div className={styles.meta}>
           {rating !== null && <span>⭐ {rating}/10</span>}
-          {playedYear !== null && <span>📅 {playedYear}</span>}
+          {year && <span>📅 {year}</span>}
         </div>
       </div>
     </div>

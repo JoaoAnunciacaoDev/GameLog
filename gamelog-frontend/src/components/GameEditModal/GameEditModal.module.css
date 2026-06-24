@@ -119,3 +119,9 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}

@@ -1,14 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Button from '../Button/Button';
 import styles from './GameEditModal.module.css';
 
 const STATUS_OPTIONS = [
-  'Quero Jogar',
-  'Jogando',
-  'Zerado',
-  'Platinado',
-  'Abandonado',
-  'Em Espera',
+  'Quero Jogar', 'Jogando', 'Zerado', 'Platinado', 'Abandonado', 'Em Espera',
 ];
 
 interface Props {
@@ -17,15 +12,16 @@ interface Props {
   coverUrl: string | null;
   initialStatus: string;
   initialRating: number | null;
-  initialPlayedYear: number | null;
+  initialStartedAt: string | null;
+  initialFinishedAt: string | null;
   initialNotes: string | null;
   onSave: (data: {
     status: string;
     rating: number | null;
-    played_year: number | null;
+    started_at: string | null;
+    finished_at: string | null;
     notes: string | null;
   }) => Promise<void>;
-  onRemove?: () => void;
   onClose: () => void;
 }
 
@@ -34,73 +30,38 @@ export default function GameEditModal({
   coverUrl,
   initialStatus,
   initialRating,
-  initialPlayedYear,
+  initialStartedAt,
+  initialFinishedAt,
   initialNotes,
   onSave,
-  onRemove,
   onClose,
 }: Props) {
   const [status, setStatus] = useState(initialStatus);
   const [rating, setRating] = useState<number | null>(initialRating);
-  const [playedYear, setPlayedYear] = useState<number | null>(initialPlayedYear);
+  const [startedAt, setStartedAt] = useState<string>(initialStartedAt ?? '');
+  const [finishedAt, setFinishedAt] = useState<string>(initialFinishedAt ?? '');
   const [notes, setNotes] = useState<string>(initialNotes ?? '');
   const [isSaving, setIsSaving] = useState(false);
 
-  const canReview = status !== 'Quero Jogar';
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  const handleStatusChange = (newStatus: string) => {
-    setStatus(newStatus);
-
-    if (newStatus === 'Quero Jogar') {
-      setRating(null);
-      setPlayedYear(null);
-      setNotes('');
-    }
-  };
-
   const handleSave = async () => {
     setIsSaving(true);
-
-    try {
-      await onSave({
-        status,
-        rating: canReview ? rating : null,
-        played_year: canReview ? playedYear : null,
-        notes: canReview ? (notes || null) : null,
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    await onSave({
+      status,
+      rating,
+      started_at: startedAt || null,
+      finished_at: finishedAt || null,
+      notes: notes || null,
+    });
+    setIsSaving(false);
   };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button 
-          className={styles.closeButton} 
-          onClick={onClose}
-          aria-label="Fechar modal"
-        >
-          X
-        </button>
+        <button className={styles.closeButton} onClick={onClose}>✕</button>
 
         <div className={styles.gameInfo}>
-          {coverUrl && (
-            <img
-              src={coverUrl}
-              alt={title}
-              className={styles.cover}
-            />
-          )}
+          {coverUrl && <img src={coverUrl} alt={title} className={styles.cover} />}
           <h2 className={styles.title}>{title}</h2>
         </div>
 
@@ -110,70 +71,62 @@ export default function GameEditModal({
             <select
               className={styles.select}
               value={status}
-              onChange={(e) => handleStatusChange(e.target.value)}
+              onChange={(e) => setStatus(e.target.value)}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
+                <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </label>
 
-          {canReview && (
-            <>
-              <label className={styles.label}>
-                Sua nota
-                <div className={styles.ratingGrid}>
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
-                    <button
-                        key={value}
-                        type="button"
-                        className={`${styles.ratingButton} ${
-                        rating === value ? styles.ratingButtonActive : ''
-                        }`}
-                        onClick={() => setRating(value)}
-                    >
-                        {value}
-                    </button>
-                    ))}
-                </div>
-              </label>
+          <label className={styles.label}>
+            Nota (0-10)
+            <input
+              type="number"
+              className={styles.input}
+              min={0}
+              max={10}
+              value={rating ?? ''}
+              onChange={(e) => setRating(e.target.value ? Number(e.target.value) : null)}
+            />
+          </label>
 
-              <label className={styles.label}>
-                Comentário
-                <textarea
-                  className={styles.textarea}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Escreva um comentário opcional..."
-                  rows={3}
-                />
-              </label>
-            </>
-          )}
+          <div className={styles.dateRow}>
+            <label className={styles.label}>
+              Data de início
+              <input
+                type="date"
+                className={styles.input}
+                value={startedAt}
+                onChange={(e) => setStartedAt(e.target.value)}
+              />
+            </label>
+            <label className={styles.label}>
+              Data de conclusão
+              <input
+                type="date"
+                className={styles.input}
+                value={finishedAt}
+                onChange={(e) => setFinishedAt(e.target.value)}
+              />
+            </label>
+          </div>
+
+          <label className={styles.label}>
+            Comentário
+            <textarea
+              className={styles.textarea}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Escreva um comentário opcional..."
+              rows={3}
+            />
+          </label>
         </div>
 
-        <div className={styles.actions}>
-          <Button
-            onClick={handleSave}
-            fullWidth
-            disabled={isSaving}
-          >
-            {isSaving ? 'Salvando...' : 'Salvar'}
-          </Button>
-
-          {onRemove && (
-            <button 
-              type="button"
-              onClick={onRemove}
-              disabled={isSaving}
-              className={styles.removeTextButton}
-            >
-              Remover da Biblioteca
-            </button>
-          )}
-        </div>
+        <Button onClick={handleSave} fullWidth disabled={isSaving}>
+          {isSaving ? 'Salvando...' : 'Salvar'}
+        </Button>
       </div>
     </div>
   );

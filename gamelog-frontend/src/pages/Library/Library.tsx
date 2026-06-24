@@ -19,7 +19,8 @@ interface LibraryGame {
   release_year: number | null;
   rating: number | null;
   status: string;
-  played_year: number | null;
+  started_at: string | null;
+  finished_at: string | null;
   notes: string | null;
 }
 
@@ -34,6 +35,7 @@ const STATUS_OPTIONS = [
 ];
 
 type Tab = 'library' | 'lists';
+type SortBy = 'rating' | 'started_at' | 'finished_at' | null;
 
 export default function Library() {
   const navigate = useNavigate();
@@ -46,7 +48,8 @@ export default function Library() {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('Todos');
-  const [sortBy, setSortBy] = useState<'rating' | 'played_year' | null>(null);
+
+  const [sortBy, setSortBy] = useState<SortBy>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const loadLibrary = async () => {
@@ -76,7 +79,8 @@ export default function Library() {
   const handleSave = async (data: {
     status: string;
     rating: number | null;
-    played_year: number | null;
+    started_at: string | null;
+    finished_at: string | null;
     notes: string | null;
   }) => {
     try {
@@ -96,11 +100,31 @@ export default function Library() {
     .filter((g) => statusFilter === 'Todos' || g.status === statusFilter)
     .filter((g) => g.title.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => {
-      if (!sortBy) return 0;
-      const aVal = a[sortBy] ?? -1;
-      const bVal = b[sortBy] ?? -1;
-      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
-    });
+    if (!sortBy) return 0;
+
+    if (sortBy === 'rating') {
+      const aVal = a.rating ?? -1;
+      const bVal = b.rating ?? -1;
+
+      return sortOrder === 'asc'
+        ? aVal - bVal
+        : bVal - aVal;
+    }
+
+    const dateField = sortBy;
+
+    const aDate = a[dateField]
+      ? new Date(a[dateField] as string).getTime()
+      : 0;
+
+    const bDate = b[dateField]
+      ? new Date(b[dateField] as string).getTime()
+      : 0;
+
+    return sortOrder === 'asc'
+      ? aDate - bDate
+      : bDate - aDate;
+  });
 
   if (loading) return <p>Carregando biblioteca...</p>;
 
@@ -144,12 +168,19 @@ export default function Library() {
             </select>
             <select
               value={sortBy ?? ''}
-              onChange={(e) => setSortBy(e.target.value as 'rating' | 'played_year' | null || null)}
+              onChange={(e) =>
+                setSortBy(
+                  e.target.value === ''
+                    ? null
+                    : (e.target.value as Exclude<SortBy, null>)
+                )
+              }
               className={styles.select}
             >
-              <option value="">Ordenar por...</option>
+              <option value="">Ordenar por</option>
               <option value="rating">Nota</option>
-              <option value="played_year">Ano jogado</option>
+              <option value="started_at">Data de início</option>
+              <option value="finished_at">Data de término</option>
             </select>
             <select
               value={sortOrder}
@@ -176,7 +207,8 @@ export default function Library() {
                   coverUrl={game.cover_url}
                   status={game.status}
                   rating={game.rating}
-                  playedYear={game.played_year}
+                  startedAt={game.started_at}
+                  finishedAt={game.finished_at}
                   onClick={() => setSelectedGame(game)}
                 />
               ))}
@@ -194,7 +226,8 @@ export default function Library() {
           coverUrl={selectedGame.cover_url}
           initialStatus={selectedGame.status}
           initialRating={selectedGame.rating}
-          initialPlayedYear={selectedGame.played_year}
+          initialStartedAt={selectedGame.started_at}
+          initialFinishedAt={selectedGame.finished_at}
           initialNotes={selectedGame.notes}
           onSave={handleSave}
           onClose={() => setSelectedGame(null)}
