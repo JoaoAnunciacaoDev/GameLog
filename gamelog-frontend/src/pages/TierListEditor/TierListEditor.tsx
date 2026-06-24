@@ -64,7 +64,7 @@ export default function TierListEditor() {
       }));
       setTiers(loadedTiers);
 
-      const loadedGames: Record<string, GameItem[]> = { [POOL_ID]: [] };
+      const loadedGames: Record<string, GameItem[]> = {};
       for (const cat of data.categories) {
         loadedGames[cat.id] = cat.items.map((item: any) => ({
           id: item.game_id,
@@ -73,13 +73,11 @@ export default function TierListEditor() {
           coverUrl: item.game?.cover_url ?? null,
         }));
       }
+
       const initialPool = location.state?.initialPool ?? [];
+      loadedGames[POOL_ID] = initialPool;
 
-      setGames((prev) => ({
-        ...prev,
-        [POOL_ID]: initialPool,
-      }));
-
+      setGames(loadedGames);
     } catch {
       navigate('/tierlists');
     } finally {
@@ -103,8 +101,12 @@ export default function TierListEditor() {
     return Object.keys(games).find((key) => games[key].some((g) => g.id === itemId));
   }, [games]);
 
+  const [activeContainer, setActiveContainer] = useState<string | null>(null);
+
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+    const id = event.active.id as string;
+    setActiveId(id);
+    setActiveContainer(findContainer(id) ?? null);
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -133,11 +135,12 @@ export default function TierListEditor() {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
-    if (!over) return;
+    if (!over || !activeContainer) {
+      setActiveContainer(null);
+      return;
+    }
 
-    const activeContainer = findContainer(active.id as string);
     const overContainer = findContainer(over.id as string) ?? (over.id as string);
-    if (!activeContainer || !overContainer) return;
 
     if (activeContainer === overContainer) {
       const activeIndex = games[activeContainer].findIndex((g) => g.id === active.id);
@@ -148,54 +151,63 @@ export default function TierListEditor() {
           [activeContainer]: arrayMove(prev[activeContainer], activeIndex, overIndex),
         }));
       }
+      setActiveContainer(null);
       return;
     }
 
+    const allGames = Object.values(games).flat();
+    const game = allGames.find((g) => g.id === active.id);
+    if (!game) { setActiveContainer(null); return; }
+
     if (overContainer !== POOL_ID) {
-      const game = games[activeContainer]?.find((g) => g.id === active.id)
-        ?? Object.values(games).flat().find((g) => g.id === active.id);
-
-      if (!game) return;
-
       try {
         if (game.itemId) {
-          await api.put(`/tierlists/category/${activeContainer}/items/${game.itemId}/move`, {
-            target_category_id: overContainer
-          }, { headers: getHeaders() });
+          await api.put(
+            `/tierlists/category/${activeContainer}/items/${game.itemId}/move`,
+            { target_category_id: overContainer },
+            { headers: getHeaders() }
+          );
         } else {
-          const response = await api.post(`/tierlists/category/${overContainer}/items`, {
-            game_id: game.id
-          }, { headers: getHeaders() });
-
+          const response = await api.post(
+            `/tierlists/category/${overContainer}/items`,
+            { game_id: game.id },
+            { headers: getHeaders() }
+          );
+          const newItemId = response.data.id;
           setGames((prev) => ({
             ...prev,
             [overContainer]: prev[overContainer].map((g) =>
-              g.id === game.id ? { ...g, itemId: response.data.id } : g
+              g.id === game.id ? { ...g, itemId: newItemId } : g
             ),
           }));
         }
-      } catch {
+      } catch (err) {
+        console.error('Erro ao mover:', err);
         showToast('Erro ao mover jogo.', 'error');
         await loadTierList();
       }
     } else {
-      const game = Object.values(games).flat().find((g) => g.id === active.id);
-      if (game?.itemId) {
+      if (game.itemId) {
         try {
-          await api.delete(`/tierlists/category/${activeContainer}/items/${game.itemId}`, {
-            headers: getHeaders()
-          });
+          await api.delete(
+            `/tierlists/category/${activeContainer}/items/${game.itemId}`,
+            { headers: getHeaders() }
+          );
           setGames((prev) => ({
             ...prev,
-            [overContainer]: prev[overContainer].map((g) =>
+            [POOL_ID]: prev[POOL_ID].map((g) =>
               g.id === game.id ? { ...g, itemId: undefined } : g
             ),
           }));
-        } catch {
+        } catch (err) {
+          console.error('Erro ao remover:', err);
           showToast('Erro ao remover jogo do tier.', 'error');
+          await loadTierList();
         }
       }
     }
+
+    setActiveContainer(null);
   };
 
   const handleAddTier = async () => {

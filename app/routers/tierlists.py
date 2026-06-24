@@ -13,6 +13,7 @@ from app.schemas.tierlist import (
     TierCategoryCreate, TierCategoryResponse, TierCategoryUpdate
 )
 from app.database import get_db
+from pydantic import BaseModel
 
 
 router = APIRouter(prefix="/tierlists", tags=["Tier Lists"])
@@ -151,6 +152,7 @@ def create_category(
     new_category = TierCategory(
         tierlist_id=tierlist_id,
         name=category.name,
+        color=category.color,
         order_index=category.order_index
     )
     db.add(new_category)
@@ -223,16 +225,19 @@ def remove_item_from_category(
     return None
 
 
+class MoveItemRequest(BaseModel):
+    target_category_id: str
+
 @router.put("/category/{category_id}/items/{item_id}/move")
 def move_item(
     category_id: str,
     item_id: str,
-    target: dict,
+    data: MoveItemRequest,
     db: Session = Depends(get_db)
 ):
     item = db.query(TierItem).filter(TierItem.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item não encontrado.")
-    item.category_id = target["target_category_id"]
+    setattr(item, 'category_id', data.target_category_id)
     db.commit()
     return {"ok": True}
