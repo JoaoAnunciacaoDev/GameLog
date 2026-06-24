@@ -92,6 +92,9 @@
   flex-wrap: wrap;
 }
 
+.ratingButtonActive {
+  background: #b6acac;
+}
 .actions {
   display: flex;
   flex-direction: column;
