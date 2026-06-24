@@ -105,11 +105,6 @@ export default function Library() {
     loadLibrary().finally(() => setLoading(false));
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   const handleSaveLibraryGame = async (data: {
     status: string;
     rating: number | null;
