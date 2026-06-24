@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
 from typing import List
 
 from app.models.tierlist import TierList, TierCategory, TierItem
@@ -102,7 +103,16 @@ def add_item_to_category(category_id: str, item: TierItemCreate, db: Session = D
     if existing:
         raise HTTPException(status_code=400, detail="Este jogo já está na tier list.")
 
-    new_item = TierItem(category_id=category_id, game_id=item.game_id)
+    max_order = db.query(func.max(TierItem.order_index)).filter(
+        TierItem.category_id == category_id
+    ).scalar() or -1
+
+    new_item = TierItem(
+        category_id=category_id,
+        game_id=item.game_id,
+        order_index=max_order + 1
+    )
+    
     db.add(new_item)
     db.commit()
     db.refresh(new_item)
@@ -256,5 +266,22 @@ def move_item(
     if not item:
         raise HTTPException(status_code=404, detail="Item não encontrado.")
     setattr(item, 'category_id', data.target_category_id)
+    db.commit()
+    return {"ok": True}
+
+
+class ReorderItemsRequest(BaseModel):
+    item_ids: list[str]
+
+@router.put("/category/{category_id}/reorder")
+def reorder_items(
+    category_id: str,
+    data: ReorderItemsRequest,
+    db: Session = Depends(get_db)
+):
+    for index, item_id in enumerate(data.item_ids):
+        item = db.query(TierItem).filter(TierItem.id == item_id).first()
+        if item:
+            setattr(item, 'order_index', index)
     db.commit()
     return {"ok": True}

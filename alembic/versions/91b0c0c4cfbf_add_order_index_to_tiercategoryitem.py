@@ -1,8 +1,8 @@
-"""Add tables
+"""add order_index to tierCategoryitem
 
-Revision ID: 2b6195b4ca71
+Revision ID: 91b0c0c4cfbf
 Revises: 
-Create Date: 2026-06-23 21:30:22.881290
+Create Date: 2026-06-24 09:14:29.605415
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2b6195b4ca71'
+revision: str = '91b0c0c4cfbf'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -52,6 +52,7 @@ def upgrade() -> None:
     sa.Column('id', sa.String(), nullable=False),
     sa.Column('user_id', sa.String(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
+    sa.Column('order_index', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
@@ -61,7 +62,8 @@ def upgrade() -> None:
     sa.Column('game_id', sa.String(), nullable=False),
     sa.Column('rating', sa.Integer(), nullable=True),
     sa.Column('status', sa.String(), nullable=False),
-    sa.Column('played_year', sa.Integer(), nullable=True),
+    sa.Column('started_at', sa.Date(), nullable=True),
+    sa.Column('finished_at', sa.Date(), nullable=True),
     sa.Column('notes', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),

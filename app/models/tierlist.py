@@ -25,7 +25,7 @@ class TierCategory(Base):
     color = Column(String, nullable=False, default="#cccccc")
 
     tierlist = relationship("TierList", back_populates="categories")
-    items = relationship("TierItem", back_populates="category", cascade="all, delete-orphan")
+    items = relationship("TierItem", back_populates="category", cascade="all, delete-orphan", order_by="TierItem.order_index" )
 
 
 class TierItem(Base):
@@ -34,6 +34,7 @@ class TierItem(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     category_id = Column(String, ForeignKey("tier_categories.id", ondelete="CASCADE"), nullable=False)
     game_id = Column(String, ForeignKey("games.id", ondelete="CASCADE"), nullable=False)
+    order_index = Column(Integer, nullable=False, default=0)
 
     category = relationship("TierCategory", back_populates="items")
     game = relationship("Game", back_populates="tier_items")

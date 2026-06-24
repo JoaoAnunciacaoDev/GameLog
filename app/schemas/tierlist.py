@@ -21,6 +21,7 @@ class GameInTierItem(BaseModel):
 class TierItemResponse(TierItemBase):
     id: str
     category_id: str
+    order_index: int = 0
     game: Optional[GameInTierItem] = None
 
     model_config = ConfigDict(from_attributes=True)

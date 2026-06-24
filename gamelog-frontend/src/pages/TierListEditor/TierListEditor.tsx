@@ -111,7 +111,9 @@ export default function TierListEditor() {
       const loadedGames: Record<string, GameItem[]> = {};
 
       for (const cat of normalCats) {
-        loadedGames[cat.id] = cat.items.map((item: any) => ({
+        loadedGames[cat.id] = [...cat.items]
+        .sort((a: any, b: any) => a.order_index - b.order_index)
+        .map((item: any) => ({
           id: item.game_id,
           itemId: item.id,
           title: item.game?.title ?? 'Jogo',
@@ -224,10 +226,27 @@ export default function TierListEditor() {
       const activeIndex = games[activeContainer].findIndex((g) => g.id === active.id);
       const overIndex = games[overContainer].findIndex((g) => g.id === over.id);
       if (activeIndex !== overIndex) {
+        const reordered = arrayMove(games[activeContainer], activeIndex, overIndex);
         setGames((prev) => ({
           ...prev,
-          [activeContainer]: arrayMove(prev[activeContainer], activeIndex, overIndex),
+          [activeContainer]: reordered,
         }));
+
+        if (activeContainer !== POOL_ID) {
+          const itemIds = reordered
+            .filter((g) => g.itemId)
+            .map((g) => g.itemId as string);
+
+          try {
+            await api.put(
+              `/tierlists/category/${activeContainer}/reorder`,
+              { item_ids: itemIds },
+              { headers: getHeaders() }
+            );
+          } catch {
+            showToast('Erro ao salvar ordem.', 'error');
+          }
+        }
       }
       setActiveContainer(null);
       return;

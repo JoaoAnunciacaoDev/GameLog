@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+from pydantic import BaseModel
 
 from app.models.custom_lists import CustomList
 from app.models.game import Game
@@ -91,3 +92,25 @@ def remove_game_from_list(
     lst.games.remove(game)
     db.commit()
     return None
+
+
+class CustomListUpdate(BaseModel):
+    name: str
+    
+    
+@router.put("/{list_id}", response_model=CustomListResponse)
+def update_list(
+    list_id: str,
+    data: CustomListUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    lst = db.query(CustomList).filter(CustomList.id == list_id).first()
+    if not lst:
+        raise HTTPException(status_code=404, detail="Lista não encontrada.")
+    if str(lst.user_id) != str(current_user.id):
+        raise HTTPException(status_code=403, detail="Sem permissão.")
+    setattr(lst, 'name', data.name)
+    db.commit()
+    db.refresh(lst)
+    return lst
