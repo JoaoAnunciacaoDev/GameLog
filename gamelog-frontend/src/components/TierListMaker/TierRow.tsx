@@ -31,6 +31,29 @@ export default function TierRow({ id, label, games, color, onLabelChange, onColo
     <div className={`${styles.tierRow} ${isOver ? styles.tierRowOver : ''}`}>
       {label !== undefined && (
         <div className={styles.tierLabelWrapper}>
+
+          <div className={styles.tierControls}>
+            {onColorChange && (
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => onColorChange(e.target.value)}
+                className={styles.colorPicker}
+                title="Mudar cor"
+              />
+            )}
+
+            {onDelete && (
+              <button
+                className={styles.deleteTierButton}
+                onClick={onDelete}
+                title="Deletar tier"
+              >
+                X
+              </button>
+            )}
+          </div>
+
           <div
             className={styles.tierLabel}
             style={{ backgroundColor: color }}
@@ -40,6 +63,7 @@ export default function TierRow({ id, label, games, color, onLabelChange, onColo
               <input
                 className={styles.tierLabelInput}
                 defaultValue={label}
+                maxLength={36}
                 autoFocus
                 onBlur={(e) => {
                   onLabelChange?.(e.target.value);
@@ -57,20 +81,7 @@ export default function TierRow({ id, label, games, color, onLabelChange, onColo
               label
             )}
           </div>
-          {onColorChange && (
-            <input
-              type="color"
-              value={color}
-              onChange={(e) => onColorChange(e.target.value)}
-              className={styles.colorPicker}
-              title="Mudar cor"
-            />
-          )}
-          {onDelete && (
-            <button className={styles.deleteTierButton} onClick={onDelete} title="Deletar tier">
-              ✕
-            </button>
-          )}
+
         </div>
       )}
 
