@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from app.models import custom_lists, user, game, user_game, tierlist  # noqa: F401
 from app.routers import auth, users, games, user_games, tierlists, custom_lists  # noqa: F811
@@ -8,6 +10,8 @@ from app.routers import auth, users, games, user_games, tierlists, custom_lists 
 load_dotenv()
 
 app = FastAPI(title="GameLog API")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+Path("uploads/covers").mkdir(parents=True, exist_ok=True)
 
 origins = [
     "http://localhost:5173",
