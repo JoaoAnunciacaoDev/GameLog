@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import styles from '@/components/GameEditModal/GameEditModal.module.css';
 
 const STATUS_OPTIONS = [
@@ -27,6 +28,7 @@ interface Props {
     finished_at: string | null;
     notes: string | null;
   }) => Promise<void>;
+  onRemove: () => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -39,6 +41,7 @@ export default function GameEditModal({
   initialFinishedAt,
   initialNotes,
   onSave,
+  onRemove,
   onClose,
 }: Props) {
   const [status, setStatus] = useState(initialStatus);
@@ -47,6 +50,9 @@ export default function GameEditModal({
   const [finishedAt, setFinishedAt] = useState(initialFinishedAt ?? '');
   const [notes, setNotes] = useState(initialNotes ?? '');
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const canReview = status !== 'Quero Jogar';
 
@@ -76,11 +82,21 @@ export default function GameEditModal({
     }
   };
 
+  const handleConfirmRemove = async () => {
+    setIsRemoving(true);
+    try {
+      await onRemove();
+    } finally {
+      setIsRemoving(false);
+      setShowConfirm(false);
+    }
+  };
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose}>
-          ✕
+          X
         </button>
 
         <div className={styles.gameInfo}>
@@ -138,7 +154,6 @@ export default function GameEditModal({
 
               <label className={styles.label}>
                 Sua nota
-
                 <div className={styles.ratingGrid}>
                   {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
                     <button
@@ -169,14 +184,36 @@ export default function GameEditModal({
           )}
         </div>
 
-        <Button
-          onClick={handleSave}
-          fullWidth
-          disabled={isSaving}
-        >
-          {isSaving ? 'Salvando...' : 'Salvar'}
-        </Button>
+        <div className={styles.modalActions}>
+          <Button
+            onClick={handleSave}
+            fullWidth
+            disabled={isSaving || isRemoving}
+          >
+            {isSaving ? 'Salvando...' : 'Salvar'}
+          </Button>
+
+          <button
+            type="button"
+            className={styles.removeButton}
+            onClick={() => setShowConfirm(true)}
+            disabled={isSaving || isRemoving}
+          >
+            {isRemoving ? 'Removendo...' : 'Remover da Biblioteca'}
+          </button>
+        </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Remover Jogo"
+        message={`Tem certeza que deseja remover "${title}" da sua biblioteca? Esta ação não pode ser desfeita.`}
+        confirmText="Sim, remover"
+        cancelText="Cancelar"
+        isDestructive={true}
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setShowConfirm(false)}
+      />
     </div>
   );
 }
