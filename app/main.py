@@ -10,8 +10,6 @@ from app.routers import auth, users, games, user_games, tierlists, custom_lists 
 load_dotenv()
 
 app = FastAPI(title="GameLog API")
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-Path("uploads/covers").mkdir(parents=True, exist_ok=True)
 
 origins = [
     "http://localhost:5173",
@@ -26,12 +24,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+Path("uploads/covers").mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(games.router)
 app.include_router(user_games.router)
 app.include_router(tierlists.router)
 app.include_router(custom_lists.router)
+
 
 @app.get("/")
 def read_root():

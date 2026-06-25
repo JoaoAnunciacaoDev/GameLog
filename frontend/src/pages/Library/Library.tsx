@@ -20,12 +20,13 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { LibraryGame, GameResult } from '@/types/game';
 
 import styles from '@/pages/Library/Library.module.css';
+import ManualGameModal from '@/components/ManualGameModal/ManualGameModal';
 
 const STATUS_OPTIONS = [
   'Todos', 'Quero Jogar', 'Jogando', 'Zerado', 'Platinado', 'Abandonado', 'Em Espera',
 ];
 
-type Tab = 'library' | 'lists' | 'search';
+type Tab = 'library' | 'lists' | 'search' | 'manual';
 type SortBy = 'rating' | 'started_at' | 'finished_at' | null;
 
 export default function Library() {
@@ -39,9 +40,14 @@ export default function Library() {
   const [selectedLibraryGame, setSelectedLibraryGame] = useState<LibraryGame | null>(null);
   const [selectedSearchGame, setSelectedSearchGame] = useState<GameResult | null>(null);
   const [gameToRemove, setGameToRemove] = useState<number | null>(null);
+  const [showManualModal, setShowManualModal] = useState(false);
 
   const addedGames = useMemo(() => {
-    return new Map<number, string>(games.map((g) => [g.external_id, g.id]));
+    return new Map<number, string>(
+      games
+        .filter((g) => g.external_id !== null)
+        .map((g) => [g.external_id as number, g.id])
+    );
   }, [games]);
 
   const handleSaveLibraryGame = async (data: {
@@ -103,6 +109,9 @@ export default function Library() {
         </button>
         <button className={`${styles.tab} ${activeTab === 'lists' ? styles.activeTab : ''}`} onClick={() => setActiveTab('lists')}>
           Minhas Listas
+        </button>
+        <button className={`${styles.tab} ${activeTab === 'manual' ? styles.activeTab : ''}`} onClick={() => setActiveTab('manual')}>
+          Adicionar Manualmente
         </button>
       </div>
 
@@ -204,6 +213,14 @@ export default function Library() {
         />
       )}
 
+      {activeTab === 'manual' && (
+        <div className={styles.manualSection}>
+          <button className={styles.manualButton} onClick={() => setShowManualModal(true)}>
+            + Adicionar Jogo Manualmente
+          </button>
+        </div>
+      )}
+
       <GameModal
         game={selectedSearchGame ? {
           title: selectedSearchGame.title,
@@ -228,6 +245,16 @@ export default function Library() {
         onConfirm={confirmRemove}
         onCancel={() => setGameToRemove(null)}
       />
+
+      {showManualModal && (
+        <ManualGameModal
+          onSuccess={async () => {
+            await loadLibrary();
+            showToast('Jogo adicionado à biblioteca!', 'success');
+          }}
+          onClose={() => setShowManualModal(false)}
+        />
+      )}
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>

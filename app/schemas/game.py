@@ -8,7 +8,7 @@ from datetime import date
 class GameBase(BaseModel):
     external_id: Optional[int] = None
     title: str
-    cover_url: Optional[HttpUrl] = None
+    cover_url: Optional[str] = None
     release_year: int | None
     platforms: list[str]
     genres: list[str]
@@ -71,9 +71,9 @@ class LibraryGameResponse(BaseModel):
     id: str
     user_id: str
     game_id: str
-    external_id: int
+    external_id: Optional[int] = None
     title: str
-    cover_url: Optional[HttpUrl] = None
+    cover_url: Optional[str] = None
     release_year: Optional[int] = None
     rating: Optional[int] = None
     status: GameStatus

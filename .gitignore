@@ -9,5 +9,6 @@ __pycache__/
 
 # Testes
 .pytest_cache/
+uploads/
 gamelog.db
 *.db

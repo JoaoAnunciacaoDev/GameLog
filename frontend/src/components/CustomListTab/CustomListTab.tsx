@@ -6,6 +6,8 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import SelectGamesModal from '@/components/SelectGamesModal/SelectGamesModal';
 import Toast from '@/components/Toast/Toast';
 import styles from '@/components/CustomListTab/CustomListTab.module.css';
+import { LibraryGame } from '@/types/game';
+import { resolveImageUrl } from '@/services/media';
 
 interface GameInList {
   id: string;
@@ -18,13 +20,6 @@ interface CustomList {
   id: string;
   name: string;
   games: GameInList[];
-}
-
-interface LibraryGame {
-  game_id: string;
-  title: string;
-  cover_url: string | null;
-  external_id: number;
 }
 
 interface Props {
@@ -184,7 +179,7 @@ export default function CustomListsTab({ userId, libraryGames }: Props) {
                     {list.games.map((game) => (
                       <div key={game.id} className={styles.gameItem}>
                         {game.cover_url ? (
-                          <img src={game.cover_url} alt={game.title} className={styles.cover} />
+                          <img src={resolveImageUrl(game.cover_url) ?? ''} alt={game.title} className={styles.cover} />
                         ) : (
                           <div className={styles.noCover}>{game.title.substring(0, 2).toUpperCase()}</div>
                         )}

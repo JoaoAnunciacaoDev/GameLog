@@ -75,3 +75,33 @@
   border-bottom-color: #007BFF;
   font-weight: 600;
 }
+
+.manualSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.manualDescription {
+  color: #666;
+  font-size: 15px;
+  max-width: 400px;
+  margin: 0;
+}
+
+.manualButton {
+  padding: 12px 24px;
+  background: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.manualButton:hover {
+  background: #0056b3;
+}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import api from '@/services/api';
 import { getAuthHeaders } from '@/services/auth';
 import { LibraryGame } from '@/types/game';
@@ -16,10 +16,16 @@ export function useLibrary(userId: string) {
         headers: getAuthHeaders()
       });
       setGames(response.data);
+    } catch {
+      console.error('Erro ao carregar biblioteca');
     } finally {
       setLoadingLibrary(false);
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (userId) loadLibrary();
+  }, [userId, loadLibrary]);
 
   const updateGame = async (userGameId: string, data: {
     status: string;

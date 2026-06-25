@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { resolveImageUrl } from '@/services/media';
 import styles from '@/components/SelectGamesModal/SelectGamesModal.module.css';
 
 interface LibraryGame {
@@ -70,7 +71,7 @@ export default function SelectGamesModal({ games, alreadyInList, onConfirm, onCl
                   onClick={() => toggleSelect(game.game_id)}
                 >
                   {game.cover_url ? (
-                    <img src={game.cover_url} alt={game.title} className={styles.cover} />
+                    <img src={resolveImageUrl(game.cover_url) ?? ''} alt={game.title} className={styles.cover} />
                   ) : (
                     <div className={styles.noCover}>
                       {game.title.substring(0, 2).toUpperCase()}
