@@ -1,6 +1,6 @@
 import json
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field, field_validator, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.enums.game_status import GameStatus
 from datetime import date
 

@@ -21,8 +21,6 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function LibraryCard({ title, coverUrl, status, rating, startedAt, finishedAt, onClick }: Props) {
-  console.log('coverUrl:', coverUrl);
-  console.log('resolved:', resolveImageUrl(coverUrl));
   const year = finishedAt
     ? new Date(finishedAt).getFullYear()
     : startedAt
@@ -33,7 +31,7 @@ export default function LibraryCard({ title, coverUrl, status, rating, startedAt
     <div className={styles.card} onClick={onClick}>
       <div className={styles.imageWrapper}>
         {coverUrl ? (
-          <img src={resolveImageUrl(coverUrl) ?? ''} alt={title} className={styles.cover} />
+          <img src={resolveImageUrl(coverUrl) ?? undefined} alt={title} className={styles.cover} />
         ) : (
           <div className={styles.coverFallback}>
             <span>Sem Imagem</span>

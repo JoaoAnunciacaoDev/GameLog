@@ -115,19 +115,40 @@ def update_user_game(
 
 @router.delete("/{user_game_id}", status_code=status.HTTP_204_NO_CONTENT)
 def remove_game_from_library(
-    user_game_id: str, 
+    user_game_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_user_game = db.query(UserGame).filter(UserGame.id == user_game_id).first()
-    
+    db_user_game = db.query(UserGame).filter(
+        UserGame.id == user_game_id
+    ).first()
+
     if not db_user_game:
-        raise HTTPException(status_code=404, detail="Registro não encontrado na biblioteca.")
+        raise HTTPException(
+            status_code=404,
+            detail="Registro não encontrado na biblioteca."
+        )
 
     if str(db_user_game.user_id) != str(current_user.id):
-        raise HTTPException(status_code=403, detail="Você não tem permissão para remover este jogo.")
-        
-    db.delete(db_user_game)
+        raise HTTPException(
+            status_code=403,
+            detail="Você não tem permissão para remover este jogo."
+        )
+
+    game = db_user_game.game
+
+    if game.is_manual:
+        if str(game.created_by) != str(current_user.id):
+            raise HTTPException(
+                status_code=403,
+                detail="Você não pode remover este jogo."
+            )
+
+        db.delete(game)
+
+    else:
+        db.delete(db_user_game)
+
     db.commit()
-    
+
     return None

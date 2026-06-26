@@ -6,7 +6,7 @@ class GameInList(BaseModel):
     id: str
     title: str
     cover_url: Optional[str] = None
-    external_id: int
+    external_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 

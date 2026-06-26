@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import { resolveImageUrl } from '@/services/media';
 import styles from '@/components/GameEditModal/GameEditModal.module.css';
 
 const STATUS_OPTIONS = [
@@ -102,7 +103,7 @@ export default function GameEditModal({
         <div className={styles.gameInfo}>
           {coverUrl && (
             <img
-              src={coverUrl}
+              src={resolveImageUrl(coverUrl) ?? undefined}
               alt={title}
               className={styles.cover}
             />
