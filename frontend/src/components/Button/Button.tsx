@@ -8,6 +8,7 @@ interface Props {
   variant?: 'primary' | 'danger' | 'ghost';
   disabled?: boolean;
   fullWidth?: boolean;
+  className?: string
 }
 
 export default function Button({
@@ -17,13 +18,14 @@ export default function Button({
   variant = 'primary',
   disabled = false,
   fullWidth = false,
+  className = '',
 }: Props) {
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${styles.button} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''}`}
+      className={`${styles.button} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''} ${className}`}
     >
       {children}
     </button>

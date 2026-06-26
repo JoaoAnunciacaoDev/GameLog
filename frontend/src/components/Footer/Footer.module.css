@@ -3,8 +3,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
-  background-color: #0A192F;
-  color: #aaa;
+  background-color: #201826;
+  border-top: 1px solid #3f324d;
+  color: #ffeacc;
   margin-top: auto;
 }
 

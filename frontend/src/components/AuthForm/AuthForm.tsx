@@ -60,7 +60,7 @@ export default function AuthForm({ onLogin, onRegister, error }: Props) {
         </Button>
       </form>
 
-      <Button variant="ghost" onClick={() => setIsLogin(!isLogin)} fullWidth>
+      <Button variant="ghost" onClick={() => setIsLogin(!isLogin)} fullWidth className={styles.toggleButton}>
         {isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Faça login'}
       </Button>
     </div>
