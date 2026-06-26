@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthForm from '@/components/AuthForm/AuthForm';
@@ -13,6 +13,13 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { toast, showToast, hideToast } = useToast();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/library', { replace: true });
+    }
+  }, [navigate]);
 
   const parseError = (err: any): string => {
     const detail = err.response?.data?.detail;

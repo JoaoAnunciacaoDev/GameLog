@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Bem-vindo ao GameLog 🎮</h1>
+      <h1 className={styles.title}>Bem-vindo ao GameLog</h1>
       <p className={styles.subtitle}>Organize e acompanhe sua biblioteca de jogos.</p>
       <Button onClick={() => navigate('/login')}>
         Entrar
