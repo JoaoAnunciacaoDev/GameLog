@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styles from '@/components/GameModal/GameModal.module.css';
+import Button from '../Button/Button';
 
 interface Game {
   title: string;
@@ -62,9 +63,9 @@ export default function GameModal({ game, isAdded, onClose, onAdd, onRemove }: P
                 Remover da Biblioteca
               </button>
             ) : onAdd ? (
-              <button className={styles.addButton} onClick={onAdd}>
+              <Button fullWidth onClick={onAdd}>
                 Adicionar à Biblioteca
-              </button>
+              </Button>
             ) : null}
           </div>
 
