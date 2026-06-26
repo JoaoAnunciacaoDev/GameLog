@@ -35,12 +35,11 @@ def add_game_to_library(
     if existing_entry:
         raise HTTPException(status_code=400, detail="Este jogo já está na sua biblioteca.")
 
+    data = user_game.model_dump(exclude_none=True)
+
     new_entry = UserGame(
         user_id=current_user.id,
-        game_id=user_game.game_id,
-        rating=user_game.rating,
-        status=user_game.status,
-        notes=user_game.notes
+        **data,
     )
 
     db.add(new_entry)
@@ -61,20 +60,36 @@ def get_user_library(user_id: str, db: Session = Depends(get_db)):
 
     result = []
     for user_game, game in library:
-        result.append(LibraryGameResponse(
-            id=user_game.id,
-            user_id=str(user_game.user_id),
-            game_id=str(user_game.game_id),
-            external_id=game.external_id,
-            title=game.title,
-            cover_url=game.cover_url,
-            release_year=game.release_year,
-            rating=user_game.rating,
-            status=user_game.status,
-            started_at=user_game.started_at,
-            finished_at=user_game.finished_at,
-            notes=user_game.notes,
-        ))
+        result.append(
+            LibraryGameResponse(
+                id=user_game.id,
+                user_id=str(user_game.user_id),
+                game_id=str(user_game.game_id),
+
+                external_id=game.external_id,
+                title=game.title,
+                cover_url=game.cover_url,
+                release_year=game.release_year,
+
+                rating=user_game.rating,
+                status=user_game.status,
+
+                started_at=user_game.started_at,
+                finished_at=user_game.finished_at,
+                acquired_at=user_game.acquired_at,
+                platinum_at=user_game.platinum_at,
+
+                hours_played=user_game.hours_played,
+
+                store=user_game.store,
+
+                custom_cover_url=user_game.custom_cover_url,
+
+                favorite=user_game.favorite,
+
+                notes=user_game.notes,
+                )
+            )
 
     return result
 
@@ -102,8 +117,14 @@ def update_user_game(
     )
 
     if new_status == GameStatus.WANT_TO_PLAY:
-        update_data["rating"] = None
-        update_data["notes"] = None
+        update_data.update({
+            "rating": None,
+            "started_at": None,
+            "finished_at": None,
+            "platinum_at": None,
+            "hours_played": None,
+            "notes": None,
+        })
     
     for key, value in update_data.items():
         setattr(db_user_game, key, value)
