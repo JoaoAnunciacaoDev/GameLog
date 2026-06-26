@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import Button from '@/components/Shared/Button/Button';
+import ConfirmModal from '@/components/Shared/ConfirmModal/ConfirmModal';
+import Modal from '@/components/Shared/Modal/Modal';
 import { resolveImageUrl } from '@/services/media';
 import styles from '@/components/GameEditModal/GameEditModal.module.css';
 import { LibraryGame } from '@/types/game';
@@ -16,7 +17,9 @@ const STATUS_OPTIONS = [
   'Em Espera',
 ];
 
-export type EditGamePayload = Partial<UpdateLibraryGame> & { custom_cover_file?: File | null };
+export type EditGamePayload = Partial<UpdateLibraryGame> & {
+  custom_cover_file?: File | null;
+};
 
 interface Props {
   game: LibraryGame;
@@ -25,12 +28,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function GameEditModal({
-  game,
-  onSave,
-  onRemove,
-  onClose,
-}: Props) {
+export default function GameEditModal({ game, onSave, onRemove, onClose }: Props) {
   const [form, setForm] = useState<UpdateLibraryGame>({
     status: game.status,
     rating: game.rating,
@@ -132,25 +130,18 @@ export default function GameEditModal({
     || (game.custom_cover_url ? resolveImageUrl(game.custom_cover_url) : null)
     || (game.cover_url ? resolveImageUrl(game.cover_url) : null);
 
-  return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>
-          X
-        </button>
-
+ return (
+    <Modal open onClose={onClose} maxWidth="720px" showCloseButton>
+      <div className={styles.modalContent}>
+        
         <div className={styles.gameInfo}>
           {displayCover && (
-            <img
-              src={displayCover}
-              alt={game.title}
-              className={styles.cover}
-            />
+            <img src={displayCover} alt={game.title} className={styles.cover} />
           )}
           <h2 className={styles.title}>{game.title}</h2>
         </div>
 
-        <div className={styles.fields}>
+         <div className={`${styles.fields} scrollbar-gamelog`}>
           <div className={styles.dateRow}>
             <label className={styles.label}>
               Status
@@ -167,7 +158,7 @@ export default function GameEditModal({
               </select>
             </label>
 
-            <label className={styles.checkboxLabel} style={{ justifyContent: 'flex-start', marginTop: '22px' }}>
+            <label className={styles.checkboxLabel}>
               <input
                 type="checkbox"
                 checked={form.favorite}
@@ -272,9 +263,9 @@ export default function GameEditModal({
                     disabled={!!coverFile}
                   />
                 </label>
-                
+
                 <div className={styles.orDivider}>ou</div>
-                
+
                 <label className={styles.fileLabel}>
                   {coverFile ? coverFile.name : 'Escolher arquivo do PC'}
                   <input
@@ -284,12 +275,15 @@ export default function GameEditModal({
                     className={styles.fileInput}
                   />
                 </label>
-                
+
                 {coverFile && (
                   <button
                     type="button"
                     className={styles.clearFile}
-                    onClick={() => { setCoverFile(null); setCoverPreview(null); }}
+                    onClick={() => {
+                      setCoverFile(null);
+                      setCoverPreview(null);
+                    }}
                   >
                     Remover arquivo
                   </button>
@@ -328,8 +322,9 @@ export default function GameEditModal({
           )}
         </div>
 
-        <div className={styles.modalActions}>
+        <div className={styles.footer}>
           <Button
+            variant="primary"
             onClick={handleSave}
             fullWidth
             disabled={isSaving || isRemoving}
@@ -358,6 +353,6 @@ export default function GameEditModal({
         onConfirm={handleConfirmRemove}
         onCancel={() => setShowConfirm(false)}
       />
-    </div>
+    </Modal>
   );
 }

@@ -1,119 +1,100 @@
+/* ===== Layout da página ===== */
 .page {
   max-width: 1280px;
   min-width: 320px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 32px 20px;
-  background-color: #3f324d;
-  color: #ffeacc;
+  padding: var(--gap-xl) var(--gap-lg);
+  background-color: var(--bg);
+  color: var(--text);
 }
 
+/* ===== Cabeçalho ===== */
 .heading {
-  font-size: 1.8rem;
-  margin-bottom: 24px;
-  color: #ffeacc;
+  font-size: var(--font-size-xxl);
+  margin-bottom: var(--gap-lg);
+  color: var(--text);
 }
 
+/* ===== Filtros e controlos ===== */
 .controls {
   display: flex;
-  gap: 12px;
+  gap: var(--gap-md);
   flex-wrap: wrap;
-  margin-bottom: 28px;
+  margin-bottom: var(--gap-xl);
 }
 
-.searchInput,
+/* Selects */
 .select {
   flex: 1;
   min-width: 200px;
   padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 234, 204, 0.2);
-  font-size: 14px;
-  background: #201826;
-  color: #ffeacc;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--input-border);
+  font-size: var(--font-size-sm);
+  background: var(--surface);
+  color: var(--text);
   outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
 }
 
-.searchInput::placeholder {
-  color: rgba(255, 234, 204, 0.5);
-}
-
-.searchInput:focus,
 .select:focus {
-  border-color: #de1d6a;
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(222, 29, 106, 0.2);
 }
 
+/* ===== Tabs ===== */
 .tabs {
   display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-lg);
   border-bottom: 1px solid rgba(255, 234, 204, 0.15);
 }
 
 .tab {
-  padding: 10px 20px;
+  padding: var(--gap-sm) var(--gap-lg);
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  color: rgba(255, 234, 204, 0.6);
+  font-size: var(--font-size-sm);
+  color: var(--muted);
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: all 0.2s ease;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
 }
 
 .tab:hover {
-  color: #ff995e;
+  color: var(--secondary);
 }
 
 .activeTab {
-  color: #de1d6a;
-  border-bottom-color: #de1d6a;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
   font-weight: 600;
 }
 
+/* ===== Grid ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  gap: var(--gap-lg);
 }
 
+/* ===== Estados vazios ===== */
 .emptyState {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(255, 234, 204, 0.6);
-  font-size: 16px;
+  color: var(--muted);
+  font-size: var(--font-size-md);
 }
 
 .manualSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--gap-md);
   padding: 60px 20px;
   text-align: center;
-}
-
-.manualDescription {
-  color: rgba(255, 234, 204, 0.7);
-  font-size: 15px;
-  max-width: 400px;
-  margin: 0;
-}
-
-.manualButton {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #de1d6a, #ff995e);
-  color: #ffeacc;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.manualButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(222, 29, 106, 0.25);
 }

@@ -1,7 +1,10 @@
 import { useState, SyntheticEvent } from 'react';
-import Button from '@/components/Button/Button';
-import Input from '@/components/Input/Input';
-import styles from '@/components/AuthForm/AuthForm.module.css';
+import Card from '@/components/Shared/Card/Card';
+import FormLayout from '@/components/Shared/FormLayout/FormLayout';
+import Button from '@/components/Shared/Button/Button';
+import Input from '@/components/Shared/Input/Input';
+import PageTitle from '@/components/Shared/PageTitle/PageTitle';
+import styles from './AuthForm.module.css';
 
 interface Props {
   onLogin: (username: string, password: string) => Promise<void>;
@@ -22,21 +25,20 @@ export default function AuthForm({ onLogin, onRegister, error }: Props) {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>
+    <Card className={styles.authCard}>
+      <PageTitle level="h1">
         {isLogin ? 'Entrar no GameLog' : 'Criar nova conta'}
-      </h2>
+      </PageTitle>
 
       {error && <p className={styles.error}>{error}</p>}
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <FormLayout onSubmit={handleSubmit}>
         <Input
           placeholder={isLogin ? 'Username ou E-mail' : 'Username'}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-
         {!isLogin && (
           <Input
             type="email"
@@ -46,7 +48,6 @@ export default function AuthForm({ onLogin, onRegister, error }: Props) {
             required
           />
         )}
-
         <Input
           type="password"
           placeholder="Senha"
@@ -54,15 +55,14 @@ export default function AuthForm({ onLogin, onRegister, error }: Props) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <Button type="submit" fullWidth>
           {isLogin ? 'Entrar' : 'Registrar'}
         </Button>
-      </form>
+      </FormLayout>
 
-      <Button variant="ghost" onClick={() => setIsLogin(!isLogin)} fullWidth className={styles.toggleButton}>
+      <Button variant="ghost" fullWidth className={styles.toggleButton} onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Faça login'}
       </Button>
-    </div>
+    </Card>
   );
 }

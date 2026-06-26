@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '@/components/Button/Button';
+import Button from '@/components/Shared/Button/Button';
+import PageTitle from '@/components/Shared/PageTitle/PageTitle';
 import styles from '@/pages/Home/Home.module.css';
 
 export default function Home() {
@@ -7,7 +8,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Bem-vindo ao GameLog</h1>
+      <PageTitle level="h1">Bem-vindo ao GameLog</PageTitle>
       <p className={styles.subtitle}>Organize e acompanhe sua biblioteca de jogos.</p>
       <Button onClick={() => navigate('/login')}>
         Entrar

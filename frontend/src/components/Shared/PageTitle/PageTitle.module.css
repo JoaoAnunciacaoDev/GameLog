@@ -1,0 +1,14 @@
+.title {
+  color: var(--text);
+  margin-bottom: var(--gap-lg);
+}
+
+.h1 {
+  font-size: var(--font-size-xxl);
+  text-align: center;
+}
+
+.h2 {
+  font-size: var(--font-size-xl);
+  text-align: left;
+}

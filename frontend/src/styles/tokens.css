@@ -1,0 +1,49 @@
+:root {
+  /* COLORS */
+  --bg: #3f324d;
+  --surface: #201826;
+  --text: #ffeacc;
+  --muted: rgba(255, 234, 204, 0.7);
+
+  --primary: #de1d6a;
+  --secondary: #ff995e;
+  --success: #93c2b1;
+  --danger: #ff4d4d;
+
+  /* BORDERS */
+  --border: rgba(255, 234, 204, 0.12);
+
+  /* INPUT */
+  --input-bg: var(--surface);
+  --input-border: rgba(255, 234, 204, 0.15);
+
+  /* RADIUS */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  /* SPACING */
+  --gap-xs: 4px;
+  --gap-sm: 6px;
+  --gap-md: 12px;
+  --gap-lg: 20px;
+  --gap-xl: 32px;
+
+  /* TYPOGRAPHY */
+  --font-family: 'Inter', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  /* SHADOWS */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-button: 0 2px 10px rgba(222, 29, 106, 0.25);
+  --shadow-button-hover: 0 8px 18px rgba(222, 29, 106, 0.25);
+
+  /* TRANSITIONS */
+  --transition-fast: 0.2s ease;
+}

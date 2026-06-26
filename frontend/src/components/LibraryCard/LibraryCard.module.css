@@ -1,20 +1,14 @@
-.card {
-  border: 1px solid rgba(255, 234, 204, 0.12);
-  border-radius: 10px;
-  background-color: #201826;
+.libraryCard {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  overflow: hidden;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  position: relative;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-.card:hover {
+.libraryCard:hover {
   transform: translateY(-5px);
   border-color: rgba(222, 29, 106, 0.35);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-md);
 }
 
 .imageWrapper {
@@ -22,7 +16,7 @@
   width: 100%;
   height: 160px;
   overflow: hidden;
-  background: #3f324d;
+  background: var(--bg);
 }
 
 .cover {
@@ -33,48 +27,47 @@
   transition: transform 0.3s ease;
 }
 
-.card:hover .cover {
+.libraryCard:hover .cover {
   transform: scale(1.05);
 }
 
 .coverFallback {
   width: 100%;
   height: 100%;
-  background-color: #3f324d;
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 234, 204, 0.5);
-  font-size: 12px;
+  color: var(--muted);
+  font-size: var(--font-size-xs);
 }
 
 .statusTag {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: var(--gap-sm);
+  left: var(--gap-sm);
   padding: 4px 10px;
-  border-radius: 6px;
-  color: #ffeacc;
+  border-radius: var(--radius-sm);
+  color: var(--text);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
 
 .info {
-  padding: 12px;
+  padding: var(--gap-md);
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  background: #201826;
+  gap: var(--gap-sm);
+  background: var(--surface);
 }
 
 .title {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  color: #ffeacc;
-
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -82,26 +75,22 @@
 
 .meta {
   display: flex;
-  gap: 12px;
-  font-size: 13px;
-  color: rgba(255, 234, 204, 0.65);
+  gap: var(--gap-md);
+  font-size: var(--font-size-xs);
+  color: var(--muted);
 }
 
-.card::before {
+.libraryCard::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(222, 29, 106, 0.08),
-    transparent
-  );
+  background: linear-gradient(120deg, transparent, rgba(222, 29, 106, 0.08), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  z-index: 1;
 }
 
-.card:hover::before {
+.libraryCard:hover::before {
   opacity: 1;
 }

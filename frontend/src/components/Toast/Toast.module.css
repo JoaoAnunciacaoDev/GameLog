@@ -1,28 +1,27 @@
 .toast {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  padding: 14px 18px;
-  border-radius: 10px;
-
-  color: #ffeacc;
-  font-size: 14px;
-
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-
+  gap: var(--gap-md);
+  padding: var(--gap-md) var(--gap-lg);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
   z-index: 200;
-
   animation: slidein 0.3s ease;
-
-  border: 1px solid rgba(255, 234, 204, 0.12);
+  border: 1px solid var(--border);
   backdrop-filter: blur(6px);
+  max-width: 90vw;
+  word-break: break-word;
 }
 
+.message {
+  flex: 1;
+}
+
+/* Variantes de cor */
 .success {
   background: rgba(147, 194, 177, 0.15);
   border-color: rgba(147, 194, 177, 0.35);
@@ -38,24 +37,38 @@
   border-color: rgba(222, 29, 106, 0.35);
 }
 
+/* Posições */
+.bottom-right {
+  bottom: var(--gap-lg);
+  right: var(--gap-lg);
+  animation-name: slidein-up;
+}
+
+.top-center {
+  top: var(--gap-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  animation-name: slidein-down;
+}
+
+/* Botão de fechar */
 .closeButton {
   background: none;
   border: none;
-
-  color: rgba(255, 234, 204, 0.8);
-
+  color: var(--muted);
   cursor: pointer;
-
-  font-size: 14px;
+  font-size: var(--font-size-md);
   padding: 0;
   line-height: 1;
+  transition: color var(--transition-fast);
 }
 
 .closeButton:hover {
-  color: #ffeacc;
+  color: var(--text);
 }
 
-@keyframes slidein {
+/* Animações */
+@keyframes slidein-up {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -63,5 +76,16 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slidein-down {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }

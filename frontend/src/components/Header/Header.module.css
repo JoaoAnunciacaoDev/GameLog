@@ -2,19 +2,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
-  border-bottom: 1px solid #3f324d;
-  background-color: #201826;
-  color: #ffeacc;
+  padding: var(--gap-md) var(--gap-xl);
+  border-bottom: 1px solid var(--bg);
+  background-color: var(--surface);
+  color: var(--text);
 }
 
 .logo {
-  font-size: 1.4rem;
+  font-size: var(--font-size-lg);
   font-weight: bold;
   cursor: pointer;
 }
 
 .nav {
   display: flex;
-  gap: 12px;
+  gap: var(--gap-md);
 }

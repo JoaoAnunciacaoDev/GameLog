@@ -15,13 +15,16 @@ import SearchBar from '@/components/SearchBar/SearchBar';
 import GameCard from '@/components/GameCard/GameCard';
 import GameGrid from '@/components/GameGrid/GameGrid';
 import GameModal from '@/components/GameModal/GameModal';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '@/components/Shared/ConfirmModal/ConfirmModal';
 
 import { LibraryGame, GameResult } from '@/types/game';
 
 import styles from '@/pages/Library/Library.module.css';
 import ManualGameModal from '@/components/ManualGameModal/ManualGameModal';
 import { getBestGameCover } from '@/services/media';
+
+import Input from '@/components/Shared/Input/Input';
+import Button from '@/components/Shared/Button/Button';
 
 const STATUS_OPTIONS = [
   'Todos', 'Quero Jogar', 'Jogando', 'Zerado', 'Platinado', 'Abandonado', 'Em Espera',
@@ -116,12 +119,11 @@ export default function Library() {
       {activeTab === 'library' && (
         <>
           <div className={styles.controls}>
-            <input
+             <Input
               type="text"
               placeholder="Pesquisar na biblioteca..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className={styles.searchInput}
             />
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={styles.select}>
               {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -215,9 +217,9 @@ export default function Library() {
 
       {activeTab === 'manual' && (
         <div className={styles.manualSection}>
-          <button className={styles.manualButton} onClick={() => setShowManualModal(true)}>
+          <Button variant="primary" onClick={() => setShowManualModal(true)}>
             + Adicionar Jogo Manualmente
-          </button>
+          </Button>
         </div>
       )}
 

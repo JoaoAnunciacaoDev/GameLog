@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '@/components/Shared/ConfirmModal/ConfirmModal';
+import Modal from '@/components/Shared/Modal/Modal';
+import Button from '@/components/Shared/Button/Button';
+import Input from '@/components/Shared/Input/Input';
 import Toast from '@/components/Toast/Toast';
 
 import { useToast } from '@/hooks/useToast';
@@ -11,6 +14,7 @@ import { getAuthHeaders } from '@/services/auth';
 import api from '@/services/api';
 
 import styles from '@/pages/TierList/TierList.module.css';
+
 
 interface TierListSummary {
   id: string;
@@ -126,62 +130,83 @@ export default function TierLists() {
     <div className={styles.page}>
       <h2 className={styles.heading}>Minhas Tier Lists</h2>
 
-      <button className={styles.createButton} onClick={() => setShowCreateModal(true)}>
+      <Button variant="primary" onClick={() => setShowCreateModal(true)} className={styles.createButton}>
         + Nova Tier List
-      </button>
+      </Button>
 
-      {showCreateModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowCreateModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Nova Tier List</h3>
+      {/* Modal de criação */}
+      <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)} maxWidth="460px" showCloseButton>
+        <div className={styles.modalContent}>
+          <h3 className={styles.modalTitle}>Nova Tier List</h3>
 
+          <label className={styles.label}>
+            Nome
+            <Input
+              type="text"
+              placeholder="Ex: Meus Jogos de 2024"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              autoFocus
+            />
+          </label>
+
+          <label className={styles.label}>
+            Fonte dos jogos
+            <select
+              value={gameSource}
+              onChange={(e) => setGameSource(e.target.value as GameSource)}
+              className={styles.select}
+            >
+              <option value="empty">Vazia (adicionar manualmente)</option>
+              <option value="all">Toda a biblioteca</option>
+              <option value="status">Por status</option>
+              <option value="list">Lista personalizada</option>
+            </select>
+          </label>
+
+          {gameSource === 'status' && (
             <label className={styles.label}>
-              Nome
-              <input type="text" placeholder="Ex: Meus Jogos de 2024" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className={styles.input} autoFocus />
-            </label>
-
-            <label className={styles.label}>
-              Fonte dos jogos
-              <select value={gameSource} onChange={(e) => setGameSource(e.target.value as GameSource)} className={styles.input}>
-                <option value="empty">Vazia (adicionar manualmente)</option>
-                <option value="all">Toda a biblioteca</option>
-                <option value="status">Por status</option>
-                <option value="list">Lista personalizada</option>
+              Status
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className={styles.select}
+              >
+                {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </label>
+          )}
 
-            {gameSource === 'status' && (
-              <label className={styles.label}>
-                Status
-                <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className={styles.input}>
-                  {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </label>
-            )}
-
-            {gameSource === 'list' && (
-              <label className={styles.label}>
-                Lista
-                <select value={selectedListId} onChange={(e) => setSelectedListId(e.target.value)} className={styles.input}>
-                  <option value="">Selecione uma lista...</option>
-                  {customLists.map((l) => <option key={l.id} value={l.id}>{l.name} ({l.games.length} jogos)</option>)}
-                </select>
-              </label>
-            )}
-
-            <div className={styles.modalActions}>
-              <button className={styles.cancelButton} onClick={() => setShowCreateModal(false)}>Cancelar</button>
-              <button
-                className={styles.confirmButton}
-                onClick={handleCreate}
-                disabled={isCreating || !newTitle.trim() || (gameSource === 'list' && !selectedListId)}
+          {gameSource === 'list' && (
+            <label className={styles.label}>
+              Lista
+              <select
+                value={selectedListId}
+                onChange={(e) => setSelectedListId(e.target.value)}
+                className={styles.select}
               >
-                {isCreating ? 'Criando...' : 'Criar'}
-              </button>
-            </div>
+                <option value="">Selecione uma lista...</option>
+                {customLists.map((l) => (
+                  <option key={l.id} value={l.id}>{l.name} ({l.games.length} jogos)</option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          <div className={styles.modalActions}>
+            <Button variant="ghost" onClick={() => setShowCreateModal(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleCreate}
+              disabled={isCreating || !newTitle.trim() || (gameSource === 'list' && !selectedListId)}
+            >
+              {isCreating ? 'Criando...' : 'Criar'}
+            </Button>
           </div>
         </div>
-      )}
+      </Modal>
 
       {tierLists.length === 0 ? (
         <div className={styles.emptyState}>Você ainda não tem tier lists. Crie uma acima!</div>

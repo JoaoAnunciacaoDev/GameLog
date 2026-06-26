@@ -1,24 +1,20 @@
-.card {
-  border: 1px solid rgba(255, 234, 204, 0.12);
-  border-radius: 10px;
-  background-color: #201826;
+.gameCard {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-.card:hover {
+.gameCard:hover {
   transform: translateY(-4px);
   border-color: rgba(222, 29, 106, 0.35);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-md);
 }
 
 .imageWrapper {
   width: 100%;
   height: 150px;
   overflow: hidden;
-  background: #3f324d;
+  background: var(--bg);
 }
 
 .cover {
@@ -29,19 +25,19 @@
   transition: transform 0.3s ease;
 }
 
-.card:hover .cover {
+.gameCard:hover .cover {
   transform: scale(1.05);
 }
 
 .coverFallback {
   width: 100%;
-  height: 150px;
-  background-color: #3f324d;
+  height: 100%;
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 234, 204, 0.5);
-  font-size: 12px;
+  color: var(--muted);
+  font-size: var(--font-size-xs);
 }
 
 .info {
@@ -50,45 +46,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
-  color: #ffeacc;
+  gap: var(--gap-sm);
 }
 
 .title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-md);
   font-weight: 600;
-  color: #ffeacc;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.addButton {
-  margin-top: auto;
-  width: 100%;
-  padding: 10px;
-  background: linear-gradient(135deg, #de1d6a, #ff995e);
-  color: #ffeacc;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.addButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(222, 29, 106, 0.25);
-}
-
-.added {
-  background: #93c2b1;
-  color: #201826;
-}
-
-.remove {
-  background: transparent;
-  color: #ff995e;
-  border: 1px solid rgba(255, 153, 94, 0.3);
+.meta {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
 }

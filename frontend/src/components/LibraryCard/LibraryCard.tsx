@@ -1,3 +1,4 @@
+import Card from '@/components/Shared/Card/Card';
 import styles from '@/components/LibraryCard/LibraryCard.module.css';
 
 interface Props {
@@ -6,20 +7,28 @@ interface Props {
   status: string;
   rating: number | null;
   startedAt: string | null;
-  finishedAt: string | null; 
+  finishedAt: string | null;
   onClick: () => void;
 }
 
 const STATUS_COLORS: Record<string, string> = {
   'Quero Jogar': '#6c757d',
-  'Jogando':     '#007BFF',
-  'Zerado':      '#28a745',
-  'Platinado':   '#a855f7',
-  'Abandonado':  '#dc3545',
-  'Em Espera':   '#fd7e14',
+  'Jogando': '#007BFF',
+  'Zerado': '#28a745',
+  'Platinado': '#a855f7',
+  'Abandonado': '#dc3545',
+  'Em Espera': '#fd7e14',
 };
 
-export default function LibraryCard({ title, coverUrl, status, rating, startedAt, finishedAt, onClick }: Props) {
+export default function LibraryCard({
+  title,
+  coverUrl,
+  status,
+  rating,
+  startedAt,
+  finishedAt,
+  onClick,
+}: Props) {
   const year = finishedAt
     ? new Date(finishedAt).getFullYear()
     : startedAt
@@ -27,14 +36,12 @@ export default function LibraryCard({ title, coverUrl, status, rating, startedAt
     : null;
 
   return (
-    <div className={styles.card} onClick={onClick}>
+    <Card className={styles.libraryCard} onClick={onClick}>
       <div className={styles.imageWrapper}>
         {coverUrl ? (
           <img src={coverUrl} alt={title} className={styles.cover} />
         ) : (
-          <div className={styles.coverFallback}>
-            <span>Sem Imagem</span>
-          </div>
+          <div className={styles.coverFallback}>Sem Imagem</div>
         )}
         <span
           className={styles.statusTag}
@@ -50,6 +57,6 @@ export default function LibraryCard({ title, coverUrl, status, rating, startedAt
           {year && <span>{year}</span>}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

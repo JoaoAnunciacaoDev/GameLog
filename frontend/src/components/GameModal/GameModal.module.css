@@ -1,56 +1,3 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  background: #201826;
-  border: 1px solid rgba(255, 234, 204, 0.12);
-  border-radius: 12px;
-
-  max-width: 480px;
-  width: 90%;
-
-  overflow: hidden;
-  position: relative;
-
-  color: #ffeacc;
-}
-
-.closeButton {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-
-  background: rgba(0, 0, 0, 0.08);
-  color: #ff0000;
-
-  border: 1px solid rgba(70, 44, 8, 0.12);
-  border-radius: 50%;
-
-  width: 32px;
-  height: 32px;
-
-  cursor: pointer;
-  font-size: 16px;
-
-  transition: all 0.8s ease;
-}
-
-.closeButton:hover {
-  background: rgba(222, 29, 106, 0.15);
-  border-color: rgba(222, 29, 106, 0.35);
-}
-
 .cover {
   width: 100%;
   height: 200px;
@@ -58,75 +5,38 @@
 }
 
 .content {
-  padding: 20px;
+  padding: var(--gap-lg);
 }
 
 .title {
-  margin: 0 0 12px 0;
-  font-size: 1.3rem;
-  color: #ffeacc;
+  margin: 0 0 var(--gap-md) 0;
+  font-size: var(--font-size-lg);
+  color: var(--text);
 }
 
 .meta {
-  margin: 6px 0;
-  color: rgba(255, 234, 204, 0.7);
-  font-size: 14px;
+  margin: var(--gap-sm) 0;
+  color: var(--muted);
+  font-size: var(--font-size-sm);
 }
 
 .actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.addButton {
-  margin-top: auto;
-  width: 50%;
-  padding: 10px;
-
-  background: linear-gradient(135deg, #de1d6a, #ff995e);
-  color: #ffeacc;
-
-  border: none;
-  border-radius: 6px;
-
-  cursor: pointer;
-
-  font-weight: 600;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.addButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(222, 29, 106, 0.25);
-}
-
-.added {
-  background: #93c2b1;
-  color: #201826;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
 }
 
 .removeButton {
-  background: none;
   border: none;
-
-  color: #ff995e;
+  color: var(--secondary);
   font-weight: 600;
-
-  cursor: pointer;
-  padding: 8px;
-
-  transition: opacity 0.2s ease, text-decoration 0.2s ease;
+  padding: var(--gap-sm);
+  text-decoration: underline;
+  background: none;
 }
 
 .removeButton:hover {
   opacity: 0.8;
-  text-decoration: underline;
-}
-
-.removeButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: none;
 }

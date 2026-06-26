@@ -1,10 +1,10 @@
 import { useState } from 'react';
-
 import api from '@/services/api';
 import { getBestGameCover } from '@/services/media';
-
 import { getAuthHeaders } from '@/services/auth';
-
+import Modal from '@/components/Shared/Modal/Modal';
+import Input from '@/components/Shared/Input/Input';
+import Button from '@/components/Shared/Button/Button';
 import styles from '@/components/GameSearchModal/GameSearchModal.module.css';
 
 interface GameResult {
@@ -67,53 +67,50 @@ export default function GameSearchModal({ onSelect, onClose, existingGameIds }: 
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h3>Adicionar Jogo</h3>
-          <button className={styles.closeButton} onClick={onClose}>✕</button>
-        </div>
-
-        <div className={styles.searchRow}>
-          <input
-            type="text"
-            placeholder="Pesquisar jogo..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className={styles.input}
-            autoFocus
-          />
-          <button
-            className={styles.searchButton}
-            onClick={handleSearch}
-            disabled={isSearching || query.trim().length < 3}
-          >
-            {isSearching ? '...' : 'Buscar'}
-          </button>
-        </div>
-
-        <div className={styles.results}>
-          {results.map((game) => {
-            const alreadyAdded = existingGameIds.has(String(game.external_id));
-            return (
-              <div
-                key={game.external_id}
-                className={`${styles.resultItem} ${alreadyAdded ? styles.alreadyAdded : ''}`}
-                onClick={() => !alreadyAdded && handleSelect(game)}
-              >
-                {game.cover_url ? (
-                  <img src={getBestGameCover(game)} alt={game.title} className={styles.cover} />
-                ) : (
-                  <div className={styles.noCover}>{game.title.substring(0, 2).toUpperCase()}</div>
-                )}
-                <span className={styles.resultTitle}>{game.title}</span>
-                {alreadyAdded && <span className={styles.addedBadge}>Adicionado</span>}
-              </div>
-            );
-          })}
-        </div>
+    <Modal open onClose={onClose} maxWidth="500px" showCloseButton>
+      <div className={styles.header}>
+        <h3>Adicionar Jogo</h3>
       </div>
-    </div>
+
+      <div className={styles.searchRow}>
+        <Input
+          type="text"
+          placeholder="Pesquisar jogo..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          autoFocus
+        />
+        <Button
+          variant="primary"
+          onClick={handleSearch}
+          disabled={isSearching || query.trim().length < 3}
+          className={styles.searchButton}
+        >
+          {isSearching ? '...' : 'Buscar'}
+        </Button>
+      </div>
+
+      <div className={`${styles.results} scrollbar-gamelog`}>
+        {results.map((game) => {
+          const alreadyAdded = existingGameIds.has(String(game.external_id));
+          return (
+            <div
+              key={game.external_id}
+              className={`${styles.resultItem} ${alreadyAdded ? styles.alreadyAdded : ''}`}
+              onClick={() => !alreadyAdded && handleSelect(game)}
+            >
+              {game.cover_url ? (
+                <img src={getBestGameCover(game)} alt={game.title} className={styles.cover} />
+              ) : (
+                <div className={styles.noCover}>{game.title.substring(0, 2).toUpperCase()}</div>
+              )}
+              <span className={styles.resultTitle}>{game.title}</span>
+              {alreadyAdded && <span className={styles.addedBadge}>Adicionado</span>}
+            </div>
+          );
+        })}
+      </div>
+    </Modal>
   );
 }

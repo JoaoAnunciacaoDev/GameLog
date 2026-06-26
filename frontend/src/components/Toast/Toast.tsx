@@ -6,18 +6,27 @@ interface Props {
   type?: 'success' | 'error' | 'info';
   onClose: () => void;
   duration?: number;
+  position?: 'bottom-right' | 'top-center';
 }
 
-export default function Toast({ message, type = 'info', onClose, duration = 3000 }: Props) {
+export default function Toast({
+  message,
+  type = 'info',
+  onClose,
+  duration = 3000,
+  position = 'bottom-right',
+}: Props) {
   useEffect(() => {
     const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
   }, [onClose, duration]);
 
   return (
-    <div className={`${styles.toast} ${styles[type]}`}>
-      <span>{message}</span>
-      <button className={styles.closeButton} onClick={onClose}>X</button>
+    <div className={`${styles.toast} ${styles[type]} ${styles[position]}`}>
+      <span className={styles.message}>{message}</span>
+      <button className={styles.closeButton} onClick={onClose}>
+        ✕
+      </button>
     </div>
   );
 }

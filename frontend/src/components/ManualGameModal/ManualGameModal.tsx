@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { getAuthHeaders } from '@/services/auth';
 import api from '@/services/api';
+import Modal from '@/components/Shared/Modal/Modal';
+import Button from '@/components/Shared/Button/Button';
+import Input from '@/components/Shared/Input/Input';
 import styles from '@/components/ManualGameModal/ManualGameModal.module.css';
 
 interface Props {
@@ -77,119 +80,113 @@ export default function ManualGameModal({ onSuccess, onClose }: Props) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h3>Adicionar Jogo Manualmente</h3>
-          <button className={styles.closeButton} onClick={onClose}>✕</button>
-        </div>
+    <Modal open onClose={onClose} maxWidth="560px" showCloseButton>
+      <div className={styles.header}>
+        <h3>Adicionar Jogo Manualmente</h3>
+      </div>
 
-        <div className={styles.body}>
-          <div className={styles.coverSection}>
-            <div className={styles.coverPreview}>
-              {coverPreview ? (
-                <img src={coverPreview} alt="Preview da capa" className={styles.previewImg} />
-              ) : (
-                <div className={styles.coverPlaceholder}>
-                  <span>Sem capa</span>
-                </div>
-              )}
-            </div>
-
-            <div className={styles.coverInputs}>
-              <label className={styles.label}>
-                URL da capa
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={coverUrl}
-                  onChange={handleUrlChange}
-                  className={styles.input}
-                  disabled={!!coverFile}
-                />
-              </label>
-              <span className={styles.orDivider}>ou</span>
-              <label className={styles.fileLabel}>
-                {coverFile ? coverFile.name : 'Escolher arquivo'}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className={styles.fileInput}
-                />
-              </label>
-              {coverFile && (
-                <button
-                  className={styles.clearFile}
-                  onClick={() => { setCoverFile(null); setCoverPreview(null); }}
-                >
-                  Remover arquivo
-                </button>
-              )}
-            </div>
+      <div className={styles.body}>
+        <div className={styles.coverSection}>
+          <div className={styles.coverPreview}>
+            {coverPreview ? (
+              <img src={coverPreview} alt="Preview da capa" className={styles.previewImg} />
+            ) : (
+              <div className={styles.coverPlaceholder}>
+                <span>Sem capa</span>
+              </div>
+            )}
           </div>
 
-          <label className={styles.label}>
-            Nome *
-            <input
-              type="text"
-              placeholder="Nome do jogo"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className={styles.input}
-              autoFocus
-            />
-          </label>
-
-          <label className={styles.label}>
-            Ano de lançamento
-            <input
-              type="number"
-              placeholder="Ex: 2024"
-              value={releaseYear}
-              onChange={(e) => setReleaseYear(e.target.value)}
-              className={styles.input}
-              min={1970}
-              max={new Date().getFullYear() + 2}
-            />
-          </label>
-
-          <label className={styles.label}>
-            Plataformas
-            <input
-              type="text"
-              placeholder="Ex: PC, PlayStation 5, Xbox (separados por vírgula)"
-              value={platforms}
-              onChange={(e) => setPlatforms(e.target.value)}
-              className={styles.input}
-            />
-          </label>
-
-          <label className={styles.label}>
-            Gêneros
-            <input
-              type="text"
-              placeholder="Ex: RPG, Action, Indie (separados por vírgula)"
-              value={genres}
-              onChange={(e) => setGenres(e.target.value)}
-              className={styles.input}
-            />
-          </label>
-
-          {error && <p className={styles.error}>{error}</p>}
+          <div className={styles.coverInputs}>
+            <label className={styles.label}>
+              URL da capa
+              <Input
+                type="url"
+                placeholder="https://..."
+                value={coverUrl}
+                onChange={handleUrlChange}
+                disabled={!!coverFile}
+              />
+            </label>
+            <span className={styles.orDivider}>ou</span>
+            <label className={styles.fileLabel}>
+              {coverFile ? coverFile.name : 'Escolher arquivo'}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className={styles.fileInput}
+              />
+            </label>
+            {coverFile && (
+              <button
+                className={styles.clearFile}
+                onClick={() => { setCoverFile(null); setCoverPreview(null); }}
+              >
+                Remover arquivo
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className={styles.footer}>
-          <button className={styles.cancelButton} onClick={onClose}>Cancelar</button>
-          <button
-            className={styles.saveButton}
-            onClick={handleSubmit}
-            disabled={isSaving || !title.trim()}
-          >
-            {isSaving ? 'Salvando...' : 'Adicionar à Biblioteca'}
-          </button>
-        </div>
+        <label className={styles.label}>
+          Nome *
+          <Input
+            type="text"
+            placeholder="Nome do jogo"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            autoFocus
+          />
+        </label>
+
+        <label className={styles.label}>
+          Ano de lançamento
+          <Input
+            type="number"
+            placeholder="Ex: 2024"
+            value={releaseYear}
+            onChange={(e) => setReleaseYear(e.target.value)}
+            min={1970}
+            max={new Date().getFullYear() + 2}
+          />
+        </label>
+
+        <label className={styles.label}>
+          Plataformas
+          <Input
+            type="text"
+            placeholder="Ex: PC, PlayStation 5, Xbox (separados por vírgula)"
+            value={platforms}
+            onChange={(e) => setPlatforms(e.target.value)}
+          />
+        </label>
+
+        <label className={styles.label}>
+          Gêneros
+          <Input
+            type="text"
+            placeholder="Ex: RPG, Action, Indie (separados por vírgula)"
+            value={genres}
+            onChange={(e) => setGenres(e.target.value)}
+          />
+        </label>
+
+        {error && <p className={styles.error}>{error}</p>}
       </div>
-    </div>
+
+      <div className={styles.footer}>
+        <Button variant="ghost" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={isSaving || !title.trim()}
+        >
+          {isSaving ? 'Salvando...' : 'Adicionar à Biblioteca'}
+        </Button>
+      </div>
+    </Modal>
   );
 }

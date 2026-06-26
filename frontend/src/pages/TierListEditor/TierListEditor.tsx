@@ -10,8 +10,10 @@ import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
 import TierRow from '@/components/TierListMaker/TierRow';
 import SortableGame from '@/components/TierListMaker/SortableGame';
 import GameSearchModal from '@/components/GameSearchModal/GameSearchModal';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '@/components/Shared/ConfirmModal/ConfirmModal';
 import Toast from '@/components/Toast/Toast';
+import Button from '@/components/Shared/Button/Button';
+import Input from '@/components/Shared/Input/Input';
 
 import { useToast } from '@/hooks/useToast';
 import { getAuthHeaders } from '@/services/auth';
@@ -427,7 +429,7 @@ export default function TierListEditor() {
     <div className={styles.page} onClick={() => setSelectedGameId(null)}>
       <div className={styles.header}>
         {editingTitle ? (
-          <input
+          <Input
             className={styles.titleInput}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -440,12 +442,16 @@ export default function TierListEditor() {
             {title}
           </h2>
         )}
-        <button className={styles.addGameButton} onClick={(e) => {
-          e.stopPropagation();
-          setShowSearchModal(true);
-        }}>
+        <Button
+          variant="primary"
+          className={styles.addGameButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowSearchModal(true);
+          }}
+        >
           + Adicionar Jogo
-        </button>
+        </Button>
       </div>
 
       <DndContext
@@ -474,7 +480,7 @@ export default function TierListEditor() {
         </div>
 
         <div className={styles.addTierRow}>
-          <input
+          <Input
             type="text"
             placeholder="Nome do novo tier..."
             value={newTierLabel}
@@ -488,9 +494,9 @@ export default function TierListEditor() {
             onChange={(e) => setNewTierColor(e.target.value)}
             className={styles.colorPicker}
           />
-          <button className={styles.addTierButton} onClick={handleAddTier}>
+          <Button variant="primary" className={styles.addTierButton} onClick={handleAddTier}>
             + Adicionar Tier
-          </button>
+          </Button>
         </div>
 
         <div className={styles.poolArea}>

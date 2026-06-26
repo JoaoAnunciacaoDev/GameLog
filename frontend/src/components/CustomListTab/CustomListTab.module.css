@@ -1,144 +1,87 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--gap-md);
 }
 
 .createRow {
   display: flex;
-  gap: 12px;
-}
-
-.input {
-  flex: 1;
-  padding: 10px 14px;
-  border-radius: 6px;
-
-  border: 1px solid rgba(255, 234, 204, 0.15);
-  background: #201826;
-
-  font-size: 15px;
-  color: #ffeacc;
-
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.input::placeholder {
-  color: rgba(255, 234, 204, 0.5);
-}
-
-.input:focus {
-  border-color: #de1d6a;
-  box-shadow: 0 0 0 2px rgba(222, 29, 106, 0.2);
-}
-
-.createButton {
-  padding: 10px 18px;
-
-  background: linear-gradient(135deg, #de1d6a, #ff995e);
-  color: #ffeacc;
-
-  border: none;
-  border-radius: 6px;
-
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.createButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(222, 29, 106, 0.25);
+  gap: var(--gap-md);
 }
 
 .emptyState {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(255, 234, 204, 0.6);
+  color: var(--muted);
 }
 
 .lists {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--gap-md);
 }
 
 .listCard {
-  border: 1px solid rgba(255, 234, 204, 0.12);
-  border-radius: 10px;
-
-  background: #201826;
-
-  overflow: hidden;
+  padding: 0;
 }
 
 .listHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 234, 204, 0.12);
+  border-bottom: 1px solid var(--border);
 }
 
 .listInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--gap-md);
 }
 
 .listName {
   font-weight: 600;
-  font-size: 15px;
-  color: #ffeacc;
+  font-size: var(--font-size-sm);
+  color: var(--text);
 }
 
 .listCount {
   font-size: 13px;
-  color: rgba(255, 234, 204, 0.6);
+  color: var(--muted);
 }
 
 .listActions {
   display: flex;
-  gap: 8px;
+  gap: var(--gap-sm);
 }
 
-.expandButton,
-.deleteButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-
-  font-size: 14px;
+.iconButton {
   padding: 6px 10px;
-  border-radius: 6px;
-
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: none;
   color: rgba(255, 234, 204, 0.8);
-
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
-.expandButton:hover {
+.iconButton:hover {
   background: rgba(255, 234, 204, 0.08);
 }
 
-.deleteButton {
-  color: #ff995e;
+.deleteIcon {
+  color: var(--secondary);
 }
 
-.deleteButton:hover {
+.deleteIcon:hover {
   background: rgba(255, 153, 94, 0.12);
 }
 
 .listContent {
-  padding: 16px;
-
+  padding: var(--gap-md);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--gap-md);
 }
 
 .gameGrid {
@@ -151,52 +94,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-
+  gap: var(--gap-xs);
   width: 70px;
   position: relative;
-}
-
-.gameItem.selectable {
-  cursor: pointer;
-  opacity: 0.85;
-  transition: opacity 0.15s ease;
-}
-
-.gameItem.selectable:hover {
-  opacity: 1;
 }
 
 .cover {
   width: 70px;
   height: 95px;
   object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 234, 204, 0.12);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
 .noCover {
   width: 70px;
   height: 95px;
-
-  background: #3f324d;
-  border-radius: 6px;
-
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-weight: bold;
   font-size: 14px;
-  color: rgba(255, 234, 204, 0.6);
+  color: var(--muted);
 }
 
 .gameTitle {
   font-size: 11px;
   text-align: center;
-
-  color: rgba(255, 234, 204, 0.75);
-
+  color: var(--muted);
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -207,19 +134,14 @@
   position: absolute;
   top: -6px;
   right: -6px;
-
-  background: #ff995e;
-  color: #201826;
-
+  background: var(--secondary);
+  color: var(--surface);
   border: none;
   border-radius: 50%;
-
   width: 18px;
   height: 18px;
-
   font-size: 10px;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,57 +150,18 @@
 
 .addGameButton {
   align-self: flex-start;
-
   padding: 8px 14px;
-
-  background: linear-gradient(135deg, #de1d6a, #ff995e);
-  color: #ffeacc;
-
-  border: none;
-  border-radius: 6px;
-
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.addGameLabel {
-  margin: 0;
-  font-size: 13px;
-  color: rgba(255, 234, 204, 0.7);
-}
-
-.cancelButton {
-  align-self: flex-start;
-
-  padding: 6px 12px;
-
-  background: none;
-  border: 1px solid rgba(255, 234, 204, 0.2);
-  border-radius: 6px;
-
-  cursor: pointer;
-  font-size: 13px;
-
-  color: rgba(255, 234, 204, 0.8);
-}
-
-.allAdded {
-  color: rgba(255, 234, 204, 0.6);
   font-size: 13px;
 }
 
 .editInput {
-  font-size: 15px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
-
   border: none;
-  border-bottom: 2px solid #de1d6a;
+  border-bottom: 2px solid var(--primary);
   outline: none;
-
   padding: 2px 4px;
   width: 200px;
-
   background: transparent;
-  color: #ffeacc;
+  color: var(--text);
 }

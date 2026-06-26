@@ -1,0 +1,22 @@
+.body {
+  padding: 24px;
+}
+
+.title {
+  margin: 0 0 var(--gap-md) 0;
+  font-size: var(--font-size-lg);
+  color: var(--text);
+}
+
+.message {
+  margin: 0 0 24px 0;
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-md);
+}

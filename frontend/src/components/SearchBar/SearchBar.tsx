@@ -1,6 +1,6 @@
 import { useState, SyntheticEvent } from 'react';
-import Button from '@/components/Button/Button';
-import Input from '@/components/Input/Input';
+import Button from '@/components/Shared/Button/Button';
+import Input from '@/components/Shared/Input/Input';
 import styles from '@/components/SearchBar/SearchBar.module.css';
 
 interface Props {

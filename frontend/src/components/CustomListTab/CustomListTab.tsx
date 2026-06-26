@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/useToast';
 import { getAuthHeaders } from '@/services/auth';
 import api from '@/services/api';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '@/components/Shared/ConfirmModal/ConfirmModal';
 import SelectGamesModal from '@/components/SelectGamesModal/SelectGamesModal';
 import Toast from '@/components/Toast/Toast';
+import Input from '@/components/Shared/Input/Input';
+import Button from '@/components/Shared/Button/Button';
+import Card from '@/components/Shared/Card/Card';
 import styles from '@/components/CustomListTab/CustomListTab.module.css';
 import { LibraryGame } from '@/types/game';
 import { getBestGameCover } from '@/services/media';
+
 
 interface GameInList {
   id: string;
@@ -26,6 +30,7 @@ interface Props {
   userId: string;
   libraryGames: LibraryGame[];
 }
+
 
 export default function CustomListsTab({ userId, libraryGames }: Props) {
   const [lists, setLists] = useState<CustomList[]>([]);
@@ -121,17 +126,16 @@ export default function CustomListsTab({ userId, libraryGames }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.createRow}>
-        <input
+        <Input
           type="text"
           placeholder="Nome da nova lista..."
           value={newListName}
           onChange={(e) => setNewListName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleCreateList()}
-          className={styles.input}
         />
-        <button className={styles.createButton} onClick={handleCreateList}>
+        <Button variant="primary" onClick={handleCreateList}>
           + Criar Lista
-        </button>
+        </Button>
       </div>
 
       {lists.length === 0 ? (
@@ -139,7 +143,7 @@ export default function CustomListsTab({ userId, libraryGames }: Props) {
       ) : (
         <div className={styles.lists}>
           {lists.map((list) => (
-            <div key={list.id} className={styles.listCard}>
+            <Card key={list.id} className={styles.listCard}>
               <div className={styles.listHeader}>
                 <div className={styles.listInfo}>
                   {editingListId === list.id ? (
@@ -166,10 +170,20 @@ export default function CustomListsTab({ userId, libraryGames }: Props) {
                   <span className={styles.listCount}>{list.games.length} jogos</span>
                 </div>
                 <div className={styles.listActions}>
-                  <button className={styles.expandButton} onClick={() => setExpandedList(expandedList === list.id ? null : list.id)}>
+                  <Button
+                    variant="ghost"
+                    className={styles.iconButton}
+                    onClick={() => setExpandedList(expandedList === list.id ? null : list.id)}
+                  >
                     {expandedList === list.id ? '▲' : '▼'}
-                  </button>
-                  <button className={styles.deleteButton} onClick={() => setListToDelete(list.id)}>🗑</button>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`${styles.iconButton} ${styles.deleteIcon}`}
+                    onClick={() => setListToDelete(list.id)}
+                  >
+                    🗑
+                  </Button>
                 </div>
               </div>
 
@@ -184,16 +198,26 @@ export default function CustomListsTab({ userId, libraryGames }: Props) {
                           <div className={styles.noCover}>{game.title.substring(0, 2).toUpperCase()}</div>
                         )}
                         <span className={styles.gameTitle}>{game.title}</span>
-                        <button className={styles.removeGame} onClick={() => setGameToRemove({ listId: list.id, gameId: game.id })} title="Remover da lista">✕</button>
+                        <button
+                          className={styles.removeGame}
+                          onClick={() => setGameToRemove({ listId: list.id, gameId: game.id })}
+                          title="Remover da lista"
+                        >
+                          ✕
+                        </button>
                       </div>
                     ))}
                   </div>
-                  <button className={styles.addGameButton} onClick={() => setSelectingForList(list.id)}>
+                  <Button
+                    variant="primary"
+                    className={styles.addGameButton}
+                    onClick={() => setSelectingForList(list.id)}
+                  >
                     + Adicionar Jogo
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}

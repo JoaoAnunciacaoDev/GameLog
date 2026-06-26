@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import styles from '@/components/ConfirmModal/ConfirmModal.module.css';
+import Modal from '@/components/Shared/Modal/Modal';
+import Button from '@/components/Shared/Button/Button';
+import styles from '@/components/Shared/ConfirmModal/ConfirmModal.module.css';
 
 interface Props {
   isOpen: boolean;
@@ -22,7 +24,6 @@ export default function ConfirmModal({
   onCancel,
   isDestructive = false,
 }: Props) {
-  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) onCancel();
@@ -31,26 +32,24 @@ export default function ConfirmModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onCancel]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className={styles.overlay} onClick={onCancel}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <Modal open={isOpen} onClose={onCancel} maxWidth="400px">
+      <div className={styles.body}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.message}>{message}</p>
-        
+
         <div className={styles.actions}>
-          <button className={styles.cancelButton} onClick={onCancel}>
+          <Button variant="ghost" onClick={onCancel}>
             {cancelText}
-          </button>
-          <button 
-            className={isDestructive ? styles.confirmDestructive : styles.confirmButton} 
+          </Button>
+          <Button
+            variant={isDestructive ? 'danger' : 'primary'}
             onClick={onConfirm}
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }

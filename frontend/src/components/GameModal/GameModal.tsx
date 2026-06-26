@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import Modal from '@/components/Shared/Modal/Modal';
+import Button from '@/components/Shared/Button/Button';
 import styles from '@/components/GameModal/GameModal.module.css';
-import Button from '../Button/Button';
 
 interface Game {
   title: string;
@@ -19,58 +19,37 @@ interface Props {
 }
 
 export default function GameModal({ game, isAdded, onClose, onAdd, onRemove }: Props) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
   if (!game) return null;
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button 
-          className={styles.closeButton} 
-          onClick={onClose}
-          aria-label="Fechar modal"
-        >
-          X
-        </button>
-        
-        {game.coverUrl && (
-          <img src={game.coverUrl} alt={game.title} className={styles.cover} />
-        )}
-        
-        <div className={styles.content}>
-          <h2 className={styles.title}>{game.title}</h2>
-          {game.releaseYear && <p className={styles.meta}>📅 {game.releaseYear}</p>}
-          
-          {game.genres.length > 0 && (
-            <p className={styles.meta}>🎮 {game.genres.join(', ')}</p>
-          )}
-          
-          {game.platforms.length > 0 && (
-            <p className={styles.meta}>🖥️ {game.platforms.join(', ')}</p>
-          )}
+    <Modal open onClose={onClose} maxWidth="480px" showCloseButton>
+      {game.coverUrl && (
+        <img src={game.coverUrl} alt={game.title} className={styles.cover} />
+      )}
 
-          <div className={styles.actions}>
-            {isAdded && onRemove ? (
-              <button className={styles.removeButton} onClick={onRemove}>
-                Remover da Biblioteca
-              </button>
-            ) : onAdd ? (
-              <Button fullWidth onClick={onAdd}>
-                Adicionar à Biblioteca
-              </Button>
-            ) : null}
-          </div>
+      <div className={styles.content}>
+        <h2 className={styles.title}>{game.title}</h2>
+        {game.releaseYear && <p className={styles.meta}>📅 {game.releaseYear}</p>}
+        {game.genres.length > 0 && <p className={styles.meta}>🎮 {game.genres.join(', ')}</p>}
+        {game.platforms.length > 0 && <p className={styles.meta}>🖥️ {game.platforms.join(', ')}</p>}
 
+        <div className={styles.actions}>
+          {isAdded && onRemove ? (
+            <Button
+              variant="ghost"
+              fullWidth
+              className={styles.removeButton}
+              onClick={onRemove}
+            >
+              Remover da Biblioteca
+            </Button>
+          ) : onAdd ? (
+            <Button variant="primary" fullWidth onClick={onAdd}>
+              Adicionar à Biblioteca
+            </Button>
+          ) : null}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }

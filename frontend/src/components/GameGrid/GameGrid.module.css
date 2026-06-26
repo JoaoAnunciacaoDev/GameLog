@@ -1,15 +1,11 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-
+  gap: var(--gap-lg);
   align-items: start;
 }
 
 .grid > * {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.grid > * {
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
   will-change: transform;
 }
