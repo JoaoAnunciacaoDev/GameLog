@@ -38,10 +38,12 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
   const [selectingForList, setSelectingForList] = useState<string | null>(null);
   const [editingListId, setEditingListId] = useState<string | null>(null);
   const [editingListName, setEditingListName] = useState('');
-  const { showToast } = useToast();
 
+  const { showToast } = useToast();
   const deleteListModal = useConfirmAction<string>();
   const removeGameModal = useConfirmAction<{ listId: string; gameId: string }>();
+
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 
   const loadLists = async () => {
     try {
@@ -77,6 +79,7 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
     if (!deleteListModal.target) return;
     try {
       await api.delete(`/lists/${deleteListModal.target}`);
+      if (expandedList === deleteListModal.target) setExpandedList(null);
       await loadLists();
       showToast('Lista removida.', 'info');
     } catch {
@@ -103,9 +106,7 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
   const handleAddGames = async (listId: string, gameIds: string[]) => {
     try {
       await Promise.all(
-        gameIds.map((gameId) =>
-          api.post(`/lists/${listId}/games/${gameId}`, {})
-        )
+        gameIds.map((gameId) => api.post(`/lists/${listId}/games/${gameId}`, {}))
       );
       await loadLists();
       setSelectingForList(null);
@@ -131,6 +132,10 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
     }
   };
 
+  const toggleExpand = (listId: string) => {
+    setExpandedList((prev) => (prev === listId ? null : listId));
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.createRow}>
@@ -153,8 +158,14 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
       ) : (
         <div className={styles.lists}>
           {lists.map((list) => (
-            <Card key={list.id} className={styles.listCard}>
-              <div className={styles.listHeader}>
+            <Card key={list.id} className={`${styles.listCard} ${expandedList === list.id ? styles.listCardSelected : ''}`}>
+              <div
+                className={styles.listHeader}
+                onClick={() => {
+                  toggleExpand(list.id);
+                  setSelectedGameId(null);
+                }}
+              >
                 <div className={styles.listInfo}>
                   {list.is_system ? (
                     <span className={styles.listName}>⭐ {list.name}</span>
@@ -164,6 +175,7 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
                       value={editingListName}
                       onChange={(e) => setEditingListName(e.target.value)}
                       onBlur={() => handleRenameList(list.id)}
+                      onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleRenameList(list.id);
                         if (e.key === 'Escape') {
@@ -176,7 +188,8 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
                   ) : (
                     <span
                       className={styles.listName}
-                      onDoubleClick={() => {
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
                         setEditingListId(list.id);
                         setEditingListName(list.name);
                       }}
@@ -185,25 +198,21 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
                       {list.name}
                     </span>
                   )}
-                  <span className={styles.listCount}>
-                    {list.games.length} jogos
-                  </span>
+                  <span className={styles.listCount}>{list.games.length} jogos</span>
                 </div>
+
                 <div className={styles.listActions}>
-                  <Button
-                    variant="ghost"
-                    className={styles.iconButton}
-                    onClick={() =>
-                      setExpandedList(expandedList === list.id ? null : list.id)
-                    }
-                  >
+                  <span className={styles.expandIcon}>
                     {expandedList === list.id ? '▲' : '▼'}
-                  </Button>
+                  </span>
                   {!list.is_system && (
                     <Button
                       variant="ghost"
                       className={`${styles.iconButton} ${styles.deleteIcon}`}
-                      onClick={() => deleteListModal.open(list.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteListModal.open(list.id);
+                      }}
                     >
                       🗑
                     </Button>
@@ -215,7 +224,14 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
                 <div className={styles.listContent}>
                   <div className={styles.gameGrid}>
                     {list.games.map((game) => (
-                      <div key={game.id} className={styles.gameItem}>
+                      <div
+                        key={game.id}
+                        className={`${styles.gameItem} ${selectedGameId === game.id ? styles.gameItemSelected : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedGameId(selectedGameId === game.id ? null : game.id);
+                        }}
+                      >
                         {game.cover_url ? (
                           <img
                             src={getBestGameCover(game)}
@@ -228,28 +244,33 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
                           </div>
                         )}
                         <span className={styles.gameTitle}>{game.title}</span>
-                        <button
-                          className={styles.removeGame}
-                          onClick={() =>
-                            removeGameModal.open({
-                              listId: list.id,
-                              gameId: game.id,
-                            })
-                          }
-                          title="Remover da lista"
-                        >
-                          X
-                        </button>
+                        {selectedGameId === game.id && (
+                          <button
+                            className={styles.removeGame}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeGameModal.open({
+                                listId: list.id,
+                                gameId: game.id,
+                              });
+                            }}
+                            title="Remover da lista"
+                          >
+                            X
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
-                  <Button
-                    variant="primary"
-                    className={styles.addGameButton}
-                    onClick={() => setSelectingForList(list.id)}
-                  >
-                    + Adicionar Jogo
-                  </Button>
+                  {!list.is_system && (
+                    <Button
+                      variant="primary"
+                      className={styles.addGameButton}
+                      onClick={() => setSelectingForList(list.id)}
+                    >
+                      + Adicionar Jogo
+                    </Button>
+                  )}
                 </div>
               )}
             </Card>
@@ -284,9 +305,7 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
           games={libraryGames}
           alreadyInList={
             new Set(
-              lists
-                .find((l) => l.id === selectingForList)
-                ?.games.map((g) => g.id) ?? []
+              lists.find((l) => l.id === selectingForList)?.games.map((g) => g.id) ?? []
             )
           }
           onConfirm={(ids) => handleAddGames(selectingForList, ids)}

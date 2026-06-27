@@ -145,7 +145,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  z-index: 10;
 }
 
 .addGameButton {
@@ -164,4 +164,14 @@
   width: 200px;
   background: transparent;
   color: var(--text);
+}
+
+.listCardSelected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.gameItemSelected {
+  background: rgba(222, 29, 106, 0.15);
+  border-radius: var(--radius-sm);
 }
