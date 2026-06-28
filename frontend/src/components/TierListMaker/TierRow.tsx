@@ -1,5 +1,9 @@
+<<<<<<< Updated upstream
 import { useState, CSSProperties } from 'react';
 
+=======
+import { CSSProperties, useState } from 'react';
+>>>>>>> Stashed changes
 import { useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
