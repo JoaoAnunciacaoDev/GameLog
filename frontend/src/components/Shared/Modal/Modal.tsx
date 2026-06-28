@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
 import styles from './Modal.module.css';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
-  children: React.ReactNode;
+  children:ReactNode;
   className?: string;
   maxWidth?: string;
   showCloseButton?: boolean;
@@ -24,12 +24,15 @@ export default function Modal({
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -75,10 +78,15 @@ export default function Modal({
     window.addEventListener('keydown', handleKeyDown);
 
     const focusTimer = window.setTimeout(() => {
+      const autoFocusElement = modalRef.current?.querySelector<HTMLElement>('[autofocus]');
+      if (autoFocusElement) {
+        autoFocusElement.focus();
+        return;
+      }
+
       const focusableElement = modalRef.current?.querySelector<HTMLElement>(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       );
-
       focusableElement?.focus();
     }, 0);
 
@@ -88,7 +96,7 @@ export default function Modal({
       previouslyFocusedElement.current?.focus();
       previouslyFocusedElement.current = null;
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
