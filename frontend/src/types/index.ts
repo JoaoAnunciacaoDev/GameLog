@@ -13,17 +13,21 @@ export interface LibraryGame {
   external_id: number | null;
   title: string;
   cover_url: string | null;
-  custom_cover_url: string | null;
-  status: string;
+  release_year: number | null;
   rating: number | null;
-  favorite: boolean;
-  hours_played: number | null;
-  store: string | null;
-  acquired_at: string | null;
+  status: string;
   started_at: string | null;
   finished_at: string | null;
-  platinum_at: string | null;
+  acquired_at: string | null;
+  platinum_at: string |null;
+  hours_played: number | null;
+  store: string | null;
+  custom_cover_url: string | null;
+  favorite: boolean;
   notes: string | null;
+  is_manual: boolean;
+  platforms: string[];
+  genres: string[];
 }
 
 export interface GameItem {
@@ -49,4 +53,19 @@ export interface TierListSummary {
   id: string;
   title: string;
   categories: { id: string; name: string; color: string; items: any[] }[];
+}
+
+export interface GameInList {
+  id: string;
+  title: string;
+  cover_url: string | null;
+  external_id: number;
+}
+
+export interface GameDisplay {
+  title: string;
+  coverUrl: string | null;
+  releaseYear: number | null;
+  platforms: string[];
+  genres: string[];
 }

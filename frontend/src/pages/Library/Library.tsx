@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLibrary } from '@/hooks/useLibrary';
 import { useLibraryFilters } from '@/hooks/useLibraryFilters';
 import { useGameSearch } from '@/hooks/useGameSearch';
-import { addGameToLibrary } from '@/hooks/useAddGame';
 import { useConfirmAction } from '@/hooks/useConfirmAction';
 
 import LibraryCard from '@/components/LibraryCard/LibraryCard';
@@ -20,7 +19,7 @@ import ManualGameModal from '@/components/ManualGameModal/ManualGameModal';
 import Input from '@/components/Shared/Input/Input';
 import Button from '@/components/Shared/Button/Button';
 
-import { LibraryGame, GameResult } from '@/types/game';
+import { LibraryGame, GameResult } from '@/types';
 import { getBestGameCover } from '@/services/media';
 
 import { groupBy } from '@/services/groupBy';
@@ -44,7 +43,7 @@ export default function Library() {
     yearField, setYearField, yearValue, setYearValue,
     hoursOperator, setHoursOperator, hoursValue, setHoursValue,
   } = useLibraryFilters(games);
-  const { searchResults, isSearching, searchGames } = useGameSearch();
+  const { searchResults, isSearching, searchGames, addGameToLibrary } = useGameSearch();
   const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<Tab>('library');

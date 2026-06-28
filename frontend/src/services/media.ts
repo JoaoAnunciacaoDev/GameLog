@@ -1,4 +1,4 @@
-import api from "./api";
+import api from '@/services/api';
 
 interface GameWithCovers {
   cover_url?: string | null;
@@ -6,15 +6,9 @@ interface GameWithCovers {
 }
 
 export const getBestGameCover = (game: GameWithCovers): string | undefined => {
-  if (game.custom_cover_url) {
-    return resolveImageUrl(game.custom_cover_url);
-  }
-  
-  if (game.cover_url) {
-    return resolveImageUrl(game.cover_url);
-  }
-  
-  return undefined; 
+  if (game.custom_cover_url) return resolveImageUrl(game.custom_cover_url);
+  if (game.cover_url) return resolveImageUrl(game.cover_url);
+  return undefined;
 };
 
 export function resolveImageUrl(url: string | null): string | undefined {

@@ -5,7 +5,7 @@ import styles from '@/components/GameCard/GameCard.module.css';
 
 interface Props {
   title: string;
-  coverUrl: string;
+  coverUrl: string | null;
   releaseYear: number | null;
   isAdded: boolean;
   onAdd: () => void;
