@@ -1,9 +1,7 @@
-import { useState, CSSProperties } from 'react';
-
+import { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { useSortable } from '@dnd-kit/sortable';
+import { useSortable, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import type { GameItem } from '@/hooks/useTierListEditor';
 
 import SortableGame from '@/components/TierListMaker/SortableGame';
@@ -20,7 +18,7 @@ interface Props {
   onRemoveGame?: (gameId: string) => void;
   selectedGameId?: string | null;
   onSelectGame?: (gameId: string | null) => void;
-  isTierDraggable?: boolean;
+  isTierDraggable?: boolean;   // <-- nova prop
 }
 
 export default function TierRow({
@@ -30,30 +28,26 @@ export default function TierRow({
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id });
   const [editingLabel, setEditingLabel] = useState(false);
 
+  // ---- useSortable apenas quando arrastável ----
   const {
-    attributes: sortableAttributes,
-    listeners: sortableListeners,
-    setNodeRef: setSortableRef,
-    transform: sortableTransform,
-    transition: sortableTransition,
-    isDragging: isTierDragging,
-  } = isTierDraggable
-    ? useSortable({ id, data: { type: 'tier' } })
-    : {
-        attributes: {},
-        listeners: {},
-        setNodeRef: undefined,
-        transform: null,
-        transition: null,
-        isDragging: false,
-      };
+  attributes: sortableAttributes,
+  listeners: sortableListeners,
+  setNodeRef: setSortableRef,
+  transform: sortableTransform,
+  transition: sortableTransition,
+  isDragging: isTierDragging,
+  } = useSortable({
+    id,
+    data: { type: 'tier' },
+    disabled: !isTierDraggable,
+  });
 
   const setRefs = (node: HTMLDivElement | null) => {
     setDroppableRef(node);
-    if (setSortableRef) setSortableRef(node);
+    setSortableRef(node);
   };
 
-  const style: CSSProperties = isTierDraggable
+  const style: React.CSSProperties = isTierDraggable
   ? {
       transform: CSS.Transform.toString(sortableTransform) || undefined,
       transition: sortableTransition ?? undefined,
@@ -61,19 +55,18 @@ export default function TierRow({
     }
   : {};
 
-  const dragProps = isTierDraggable
-    ? { ...sortableAttributes, ...sortableListeners }
-    : {};
-
   return (
     <div
       ref={setRefs}
       className={`${styles.tierRow} ${isOver ? styles.tierRowOver : ''} ${isTierDragging ? styles.tierRowDragging : ''}`}
-      style={style}
-      {...dragProps}
     >
       {label !== undefined && (
-        <div className={styles.tierLabelWrapper}>
+        <div
+          ref={setSortableRef}
+          className={styles.tierLabelWrapper}
+          style={style}
+          {...(isTierDraggable ? { ...sortableListeners, ...sortableAttributes } : {})}
+        >
           <div className={styles.tierControls}>
             {onColorChange && (
               <input

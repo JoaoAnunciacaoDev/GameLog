@@ -80,8 +80,9 @@ export default function TierListEditor() {
   const removeGameConfirm = useConfirmAction<string>();
   const removeTierConfirm = useConfirmAction<string>();
 
+  // --- Handlers de arrasto de tiers ---
   const handleTierDragStart = useCallback((_event: DragStartEvent) => {
-
+    // Pode ser usado para feedback visual futuro
   }, []);
 
   const handleTierDragOver = useCallback((_event: DragOverEvent) => {
@@ -90,7 +91,6 @@ export default function TierListEditor() {
 
   const handleTierDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event;
-    // setActiveTierId(null);
 
     if (!over || active.id === over.id) return;
 

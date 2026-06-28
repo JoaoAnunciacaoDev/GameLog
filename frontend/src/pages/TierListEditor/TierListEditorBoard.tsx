@@ -1,6 +1,6 @@
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor,
-  useSensor, useSensors, rectIntersection,
+  useSensor, useSensors, rectIntersection, TouchSensor,
   type DragStartEvent, type DragOverEvent, type DragEndEvent,
 } from '@dnd-kit/core';
 import {
@@ -61,8 +61,9 @@ export default function TierListEditorBoard({
   onTierDragOver,
   onTierDragEnd,
 }: Props) {
-  const sensors = useSensors(
+    const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
@@ -123,6 +124,7 @@ export default function TierListEditorBoard({
         </div>
       </SortableContext>
 
+      {/* O resto do código permanece igual */}
       <div className={styles.addTierRow}>
         <Input
           type="text"
