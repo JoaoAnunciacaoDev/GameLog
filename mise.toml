@@ -24,3 +24,15 @@ run = "npm install"
 [tasks."front.lint"]
 dir = "frontend"
 run = "npm run lint"
+
+[tasks."back.lint"]
+dir = "app"
+run = "poetry run ruff check"
+
+[tasks."back.test"]
+dir = "app"
+run = "poetry run pytest"
+
+[tasks."front.test"]
+dir = "frontend"
+run = "npm run test"
