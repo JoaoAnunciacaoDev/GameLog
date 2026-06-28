@@ -1,13 +1,6 @@
 const TOKEN_KEY = 'token';
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY);
-
-export const setToken = (token: string) => {
-	localStorage.setItem(TOKEN_KEY, token);
-};
-
-export const clearToken = () => {
-	localStorage.removeItem(TOKEN_KEY);
-};
-
-export const hasToken = () => Boolean(getToken());
+export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
+export const setToken = (token: string): void => localStorage.setItem(TOKEN_KEY, token);
+export const clearToken = (): void => localStorage.removeItem(TOKEN_KEY);
+export const isAuthenticated = (): boolean => !!getToken();

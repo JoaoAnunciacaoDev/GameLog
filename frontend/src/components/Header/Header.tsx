@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/Shared/Button/Button';
-import { clearToken, hasToken } from '@/services/auth';
+import { clearToken, isAuthenticated } from '@/services/auth';
 import styles from '@/components/Header/Header.module.css';
 
 export default function Header() {
   const navigate = useNavigate();
-  const token = hasToken();
+  const token = isAuthenticated();
 
   const handleLogout = () => {
     clearToken();

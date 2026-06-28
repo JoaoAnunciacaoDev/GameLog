@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '@/services/api';
 import { clearToken, getToken } from '@/services/auth';
 
+
 export function useAuth() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string>('');
