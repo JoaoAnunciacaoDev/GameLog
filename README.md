@@ -41,6 +41,12 @@ Para garantir o isolamento perfeito do ambiente, este projeto utiliza o [Mise](h
 
 Clone o repositório e execute os comandos abaixo na raiz do projeto para preparar todo o ecossistema (backend e frontend):
 
+# Crie o arquivo de variáveis de ambiente:
+
+```bash
+cp .env.example .env
+```
+
 # Instala o Node.js e ferramentas definidas no ficheiro mise.toml
 ```bash
 mise install
