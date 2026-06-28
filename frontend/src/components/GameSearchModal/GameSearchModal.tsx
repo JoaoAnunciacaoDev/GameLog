@@ -4,6 +4,8 @@ import { getBestGameCover } from '@/services/media';
 import Modal from '@/components/Shared/Modal/Modal';
 import Input from '@/components/Shared/Input/Input';
 import Button from '@/components/Shared/Button/Button';
+import { useToast } from '@/hooks/useToast';
+import { ensureGameRecord } from '@/services/gameCatalog';
 import styles from '@/components/GameSearchModal/GameSearchModal.module.css';
 import { GameResult } from '@/types';
 
@@ -17,6 +19,7 @@ export default function GameSearchModal({ onSelect, onClose, existingGameIds }: 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GameResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const { showToast } = useToast();
 
   const handleSearch = async () => {
     if (query.trim().length < 3) return;
@@ -25,7 +28,7 @@ export default function GameSearchModal({ onSelect, onClose, existingGameIds }: 
       const response = await api.get(`/games/search?q=${query}`);
       setResults(response.data);
     } catch {
-      console.error('Erro ao buscar jogos');
+      showToast('Erro ao buscar jogos.', 'error');
     } finally {
       setIsSearching(false);
     }
@@ -33,30 +36,13 @@ export default function GameSearchModal({ onSelect, onClose, existingGameIds }: 
 
   const handleSelect = async (game: GameResult) => {
     try {
-      let gameId: string;
-
-      try {
-        const response = await api.post('/games/', {
-          external_id: game.external_id,
-          title: game.title,
-          cover_url: game.cover_url,
-          release_year: null,
-          platforms: [],
-          genres: [],
-        });
-        gameId = response.data.id;
-      } catch (error: unknown) {
-        const err = error as { response?: { status?: number } };
-        if (err.response?.status !== 400) throw error;
-        const allGames = await api.get<Array<{ id: string; external_id: number }>>('/games/');
-        const existing = allGames.data.find((g) => g.external_id === game.external_id);
-        if (!existing) throw err;
-        gameId = existing.id;
-      }
-
+      const gameId = await ensureGameRecord({
+        ...game,
+        release_year: null,
+      });
       onSelect({ id: gameId, title: game.title, coverUrl: game.cover_url });
     } catch {
-      console.error('Erro ao adicionar jogo');
+      showToast('Erro ao adicionar jogo.', 'error');
     }
   };
 

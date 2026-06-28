@@ -8,23 +8,9 @@ import Input from '@/components/Shared/Input/Input';
 import Button from '@/components/Shared/Button/Button';
 import Card from '@/components/Shared/Card/Card';
 import styles from '@/components/CustomListTab/CustomListTab.module.css';
+import type { CustomList } from '@/types';
 import { LibraryGame } from '@/types/game';
 import { getBestGameCover } from '@/services/media';
-
-interface GameInList {
-  id: string;
-  title: string;
-  cover_url: string | null;
-  external_id: number;
-}
-
-interface CustomList {
-  id: string;
-  name: string;
-  games: GameInList[];
-  is_system: boolean;
-  list_type: string | null;
-}
 
 interface Props {
   userId: string;
