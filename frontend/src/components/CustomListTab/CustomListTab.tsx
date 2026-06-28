@@ -23,6 +23,7 @@ interface CustomList {
   name: string;
   games: GameInList[];
   is_system: boolean;
+  list_type: string | null;
 }
 
 interface Props {
@@ -48,9 +49,15 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
   const loadLists = async () => {
     try {
       const response = await api.get(`/lists/user/${userId}`);
+      const priority: Record<string, number> = {
+        'favorites': 1,
+        'completed_year': 2,
+        'platinized_year': 3,
+      };
       const sorted = response.data.sort((a: CustomList, b: CustomList) => {
-        if (a.is_system && !b.is_system) return -1;
-        if (!a.is_system && b.is_system) return 1;
+        const aPriority = a.list_type ? (priority[a.list_type] ?? 4) : 4;
+        const bPriority = b.list_type ? (priority[b.list_type] ?? 4) : 4;
+        if (aPriority !== bPriority) return aPriority - bPriority;
         return a.name.localeCompare(b.name);
       });
       setLists(sorted);
@@ -168,7 +175,12 @@ export default function CustomListsTab({ userId, libraryGames, onLibraryChange }
               >
                 <div className={styles.listInfo}>
                   {list.is_system ? (
-                    <span className={styles.listName}>⭐ {list.name}</span>
+                    <span className={styles.listName}>
+                      {list.list_type === 'favorites' && '⭐ '}
+                      {list.list_type === 'completed_year' && '🏁 '}
+                      {list.list_type === 'platinized_year' && '🏆 '}
+                      {list.name}
+                    </span>
                   ) : editingListId === list.id ? (
                     <input
                       className={styles.editInput}

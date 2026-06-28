@@ -1,8 +1,8 @@
-"""Add field is_system to custom_list
+"""Add field automatic  custom_list
 
-Revision ID: d0f617016c9b
+Revision ID: 818274a54755
 Revises: 
-Create Date: 2026-06-27 13:55:16.651025
+Create Date: 2026-06-27 20:44:34.963810
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd0f617016c9b'
+revision: str = '818274a54755'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,6 +35,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('is_system', sa.Boolean(), nullable=False),
+    sa.Column('list_type', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )

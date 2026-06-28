@@ -5,11 +5,13 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
 
+from app.models.custom_lists import CustomList
 from app.models.user_game import UserGame
 from app.models.user import User
 from app.models.game import Game
 
 from app.routers.custom_lists import get_or_create_favorites_list
+from app.routers.custom_lists import sync_auto_list
 from app.schemas.game import UserGameCreate, UserGameResponse, UserGameUpdate, LibraryGameResponse
 from app.enums.game_status import GameStatus
 from app.database import get_db
@@ -153,6 +155,24 @@ def update_user_game(
 
     db.commit()
     db.refresh(db_user_game)
+    
+    if 'finished_at' in update_data:
+        sync_auto_list(
+            user_id=str(db_user_game.user_id),
+            user_game=db_user_game,
+            field_name='finished_at',
+            list_type='completed_year',
+            db=db
+        )
+
+    if 'platinum_at' in update_data:
+        sync_auto_list(
+            user_id=str(db_user_game.user_id),
+            user_game=db_user_game,
+            field_name='platinum_at',
+            list_type='platinized_year',
+            db=db
+        )
 
     return db_user_game
 
@@ -202,36 +222,27 @@ def remove_game_from_library(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_user_game = db.query(UserGame).filter(
-        UserGame.id == user_game_id
-    ).first()
-
+    db_user_game = db.query(UserGame).filter(UserGame.id == user_game_id).first()
     if not db_user_game:
-        raise HTTPException(
-            status_code=404,
-            detail="Registro não encontrado na biblioteca."
-        )
-
+        raise HTTPException(status_code=404, detail="Registro não encontrado na biblioteca.")
     if str(db_user_game.user_id) != str(current_user.id):
-        raise HTTPException(
-            status_code=403,
-            detail="Você não tem permissão para remover este jogo."
-        )
+        raise HTTPException(status_code=403, detail="Você não tem permissão para remover este jogo.")
 
     game = db_user_game.game
 
+    lists = db.query(CustomList).filter(CustomList.user_id == current_user.id).all()
+    for lst in lists:
+        if game in lst.games:
+            lst.games.remove(game)
+            if bool(lst.is_system) and len(lst.games) == 0:
+                db.delete(lst)
+
     if game.is_manual:
         if str(game.created_by) != str(current_user.id):
-            raise HTTPException(
-                status_code=403,
-                detail="Você não pode remover este jogo."
-            )
-
+            raise HTTPException(status_code=403, detail="Você não pode remover este jogo.")
         db.delete(game)
-
     else:
         db.delete(db_user_game)
 
     db.commit()
-
     return None

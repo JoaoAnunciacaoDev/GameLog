@@ -17,6 +17,7 @@ class CustomList(Base):
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     is_system = Column(Boolean, default=False, nullable=False)
+    list_type = Column(String, nullable=True)
 
     user = relationship("User", back_populates="custom_lists")
     games = relationship("Game", secondary=custom_list_games, back_populates="custom_lists")
