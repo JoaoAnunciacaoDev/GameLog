@@ -15,7 +15,6 @@ import ManualGameModal from '@/components/ManualGameModal/ManualGameModal';
 import Button from '@/components/Shared/Button/Button';
 
 import { LibraryGame, GameResult } from '@/types';
-import { getBestGameCover } from '@/services/media';
 
 import LibraryTabs from '@/pages/Library/LibraryTabs';
 import LibraryFilters from '@/pages/Library/LibraryFilters';

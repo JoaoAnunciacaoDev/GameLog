@@ -1,5 +1,5 @@
 import api from '@/services/api';
-import { GameResult } from '@/types/game';
+import { GameResult } from '@/types';
 import { ensureGameRecord } from '@/services/gameCatalog';
 
 
