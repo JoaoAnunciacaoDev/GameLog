@@ -2,7 +2,7 @@ name: Backend Tests
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
     paths:
       - 'app/**'
       - 'alembic/**'
