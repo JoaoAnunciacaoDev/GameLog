@@ -1,0 +1,449 @@
+.container {
+  max-width: var(--max-width-desktop);
+  margin: 0 auto;
+  padding: var(--gap-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  animation: fadeIn var(--transition-medium) ease-out;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: var(--gap-md);
+  color: var(--text-secondary);
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--border-color);
+  border-bottom-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xl);
+  background: linear-gradient(135deg, rgba(222, 29, 106, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+  padding: var(--gap-xl);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.avatarLarge {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(222, 29, 106, 0.3);
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.emailText {
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  margin: 0;
+}
+
+.joinedText {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* Stats Cards Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-xl) !important;
+  text-align: center;
+  background: var(--bg-card);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: var(--gap-xs);
+}
+
+.statLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Details Section (Status and Genre) */
+.detailsSection {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gap-md);
+}
+
+.detailsCard {
+  padding: var(--gap-xl) !important;
+  height: 100%;
+}
+
+.cardTitle {
+  margin: 0 0 var(--gap-md) 0;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--gap-sm);
+}
+
+.statusList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.statusItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.statusMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+}
+
+.statusName {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.statusCount {
+  color: var(--text-secondary);
+}
+
+.progressBarBg {
+  background: rgba(255, 255, 255, 0.08);
+  height: 8px;
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: var(--border-radius-full);
+  transition: width var(--transition-medium) ease-out;
+}
+
+/* Genre Highlight Card */
+.genreHighlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-md) 0;
+  text-align: center;
+}
+
+.gamepadIcon {
+  font-size: 3.5rem;
+  margin-bottom: var(--gap-sm);
+  filter: drop-shadow(0 0 10px rgba(222, 29, 106, 0.4));
+}
+
+.genreName {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: var(--gap-sm);
+}
+
+.genreDesc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 240px;
+}
+
+/* Timeline */
+.timelineSection {
+  margin-top: var(--gap-lg);
+}
+
+.timelineSubtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: -10px 0 var(--gap-xl) 0;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.timelineYearGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding-left: var(--gap-md);
+  min-height: 40px;
+}
+
+.timelineYearBadge {
+  position: absolute;
+  left: -36px;
+  top: 0;
+  width: 72px;
+  height: 28px;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  background: var(--bg-card);
+  border: 2px solid var(--primary);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(222, 29, 106, 0.4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+  outline: none;
+  z-index: 2;
+}
+
+.timelineYearBadge:hover {
+  background: var(--primary);
+  color: var(--text);
+  box-shadow: 0 0 12px rgba(222, 29, 106, 0.6);
+  border-color: var(--primary);
+}
+
+.collapsedBadge {
+  border-color: var(--muted);
+  box-shadow: none;
+}
+
+.collapsedBadge:hover {
+  background: var(--muted);
+  color: var(--text);
+  border-color: var(--muted);
+  box-shadow: none;
+}
+
+.collapseIcon {
+  font-size: 8px;
+}
+
+.timelineGamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--gap-md);
+}
+
+.gameTimelineCard {
+  display: flex;
+  gap: var(--gap-md);
+  padding: var(--gap-sm) !important;
+  align-items: center;
+  background: var(--bg-card);
+}
+
+.gameCoverWrapper {
+  flex-shrink: 0;
+}
+
+.gameCover {
+  width: 50px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.gameCoverPlaceholder {
+  width: 50px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text-secondary);
+}
+
+.gameDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0; /* Permite truncar o título do jogo */
+}
+
+.gameTitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gameMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.emptyText {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  margin: var(--gap-md) 0;
+  font-style: italic;
+}
+
+.emptyTimelineCard {
+  padding: var(--gap-xl) !important;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .detailsSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--gap-lg);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: var(--gap-md);
+  }
+
+  .profileHeader {
+    gap: var(--gap-md);
+    padding: var(--gap-md);
+  }
+
+  .avatarLarge {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+
+  .statsGrid {
+    gap: var(--gap-sm);
+  }
+
+  .timeline {
+    padding-left: 16px;
+  }
+
+  .timeline::before {
+    left: 2px;
+  }
+
+  .timelineYearBadge {
+    left: -28px;
+    width: 60px;
+    height: 24px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .timelineYearGroup {
+    padding-left: var(--gap-sm);
+  }
+
+  .timelineGamesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--gap-sm);
+  }
+}
