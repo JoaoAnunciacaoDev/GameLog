@@ -127,7 +127,9 @@ def test_create_user_expired_code(client, db_session):
 
     # Forçar expiração do código editando diretamente no banco
     verification = (
-        db_session.query(EmailVerification).filter(EmailVerification.email == "joao@gamelog.com").first()
+        db_session.query(EmailVerification)
+        .filter(EmailVerification.email == "joao@gamelog.com")
+        .first()
     )
     assert verification is not None
     verification.expires_at = datetime.now() - timedelta(minutes=1)

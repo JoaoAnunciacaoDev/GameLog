@@ -1,15 +1,15 @@
-from datetime import datetime, timedelta, timezone
 import os
 import random
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.user import User
 from app.models.email_verification import EmailVerification
-from app.schemas.user import UserCreate, UserResponse, UserUpdate, UserRegisterInitiate
+from app.models.user import User
+from app.schemas.user import UserCreate, UserRegisterInitiate, UserResponse, UserUpdate
 from app.security import get_current_user
 from app.services.auth_service import get_password_hash
 from app.services.email_service import send_verification_email
@@ -53,9 +53,7 @@ def initiate_registration(
         verification.code = code
         verification.expires_at = expires_at
     else:
-        verification = EmailVerification(
-            email=user_init.email, code=code, expires_at=expires_at
-        )
+        verification = EmailVerification(email=user_init.email, code=code, expires_at=expires_at)
         db.add(verification)
 
     db.commit()
@@ -79,9 +77,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         )
 
     # 2. Validar o código de verificação no banco de dados
-    verification = (
-        db.query(EmailVerification).filter(EmailVerification.email == user.email).first()
-    )
+    verification = db.query(EmailVerification).filter(EmailVerification.email == user.email).first()
 
     if not verification or verification.code != user.code:
         raise HTTPException(

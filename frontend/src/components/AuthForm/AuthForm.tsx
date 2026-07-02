@@ -10,16 +10,20 @@ interface Props {
   onLogin: (username: string, password: string) => Promise<void>;
   onRegisterInitiate: (username: string, email: string, password: string) => Promise<void>;
   onRegisterConfirm: (username: string, email: string, password: string, code: string) => Promise<void>;
+  onPasswordResetInitiate: (email: string) => Promise<void>;
+  onPasswordResetConfirm: (email: string, code: string, new_password: string) => Promise<void>;
   error: string;
   clearError: () => void;
 }
 
-type Step = 'login' | 'register' | 'verify';
+type Step = 'login' | 'register' | 'verify' | 'reset_password_initiate' | 'reset_password_confirm';
 
 export default function AuthForm({
   onLogin,
   onRegisterInitiate,
   onRegisterConfirm,
+  onPasswordResetInitiate,
+  onPasswordResetConfirm,
   error,
   clearError,
 }: Props) {
@@ -45,6 +49,14 @@ export default function AuthForm({
         await onRegisterConfirm(username, email, password, code);
         setCode('');
         setStep('login');
+      } else if (step === 'reset_password_initiate') {
+        await onPasswordResetInitiate(email);
+        setStep('reset_password_confirm');
+      } else if (step === 'reset_password_confirm') {
+        await onPasswordResetConfirm(email, code, password);
+        setPassword('');
+        setCode('');
+        setStep('login');
       }
     } catch {
       // O erro é tratado no componente pai e exibido via prop 'error'
@@ -62,19 +74,28 @@ export default function AuthForm({
     } else if (step === 'verify') {
       setStep('register');
       setCode('');
+    } else if (step === 'reset_password_initiate') {
+      setStep('login');
+    } else if (step === 'reset_password_confirm') {
+      setStep('reset_password_initiate');
+      setCode('');
     }
   };
 
   const getTitle = () => {
     if (step === 'login') return 'Entrar no GameLog';
     if (step === 'register') return 'Criar nova conta';
-    return 'Verificação de E-mail';
+    if (step === 'verify') return 'Verificação de E-mail';
+    if (step === 'reset_password_initiate') return 'Recuperar Senha';
+    return 'Redefinir Senha';
   };
 
   const getToggleText = () => {
     if (step === 'login') return 'Não tem conta? Registre-se';
     if (step === 'register') return 'Já tem conta? Faça login';
-    return 'Voltar para dados de cadastro';
+    if (step === 'verify') return 'Voltar para dados de cadastro';
+    if (step === 'reset_password_initiate') return 'Voltar para o login';
+    return 'Voltar para envio de e-mail';
   };
 
   return (
@@ -84,7 +105,8 @@ export default function AuthForm({
       {error && <p className={styles.error}>{error}</p>}
 
       <FormLayout onSubmit={handleSubmit}>
-        {step !== 'verify' && (
+        {/* Etapas de Login e Registro */}
+        {(step === 'login' || step === 'register') && (
           <>
             <Input
               placeholder={step === 'login' ? 'Username ou E-mail' : 'Username'}
@@ -111,9 +133,23 @@ export default function AuthForm({
               required
               disabled={isSubmitting}
             />
+            {step === 'login' && (
+              <button
+                type="button"
+                className={styles.forgotPasswordButton}
+                onClick={() => {
+                  clearError();
+                  setStep('reset_password_initiate');
+                }}
+                disabled={isSubmitting}
+              >
+                Esqueci minha senha
+              </button>
+            )}
           </>
         )}
 
+        {/* Etapa de verificação do cadastro */}
         {step === 'verify' && (
           <>
             <p className={styles.infoText}>
@@ -132,8 +168,62 @@ export default function AuthForm({
           </>
         )}
 
+        {/* Etapa 1 da recuperação de senha (Inserir e-mail) */}
+        {step === 'reset_password_initiate' && (
+          <>
+            <p className={styles.infoText}>
+              Informe o e-mail cadastrado na sua conta para enviarmos o código de redefinição de senha.
+            </p>
+            <Input
+              type="email"
+              placeholder="Seu e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isSubmitting}
+            />
+          </>
+        )}
+
+        {/* Etapa 2 da recuperação de senha (Inserir código e nova senha) */}
+        {step === 'reset_password_confirm' && (
+          <>
+            <p className={styles.infoText}>
+              Enviamos um código de redefinição de senha para o e-mail: <br />
+              <strong>{email}</strong>. <br />
+              Insira o código de 6 dígitos e defina sua nova senha abaixo.
+            </p>
+            <Input
+              placeholder="Código de 6 dígitos"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              maxLength={6}
+              required
+              disabled={isSubmitting}
+            />
+            <Input
+              type="password"
+              placeholder="Nova Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isSubmitting}
+            />
+          </>
+        )}
+
         <Button type="submit" fullWidth disabled={isSubmitting}>
-          {isSubmitting ? 'Carregando...' : step === 'login' ? 'Entrar' : step === 'register' ? 'Enviar Código' : 'Confirmar Código'}
+          {isSubmitting
+            ? 'Carregando...'
+            : step === 'login'
+            ? 'Entrar'
+            : step === 'register'
+            ? 'Enviar Código'
+            : step === 'verify'
+            ? 'Confirmar Código'
+            : step === 'reset_password_initiate'
+            ? 'Enviar Código'
+            : 'Redefinir Senha'}
         </Button>
       </FormLayout>
 

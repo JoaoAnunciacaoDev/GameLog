@@ -113,12 +113,38 @@ export default function Login() {
     }
   };
 
+  const handlePasswordResetInitiate = async (email: string) => {
+    setError('');
+    try {
+      await api.post('/password-reset/initiate', { email });
+      showToast('Se o e-mail estiver cadastrado, um código foi enviado.', 'info');
+    } catch (err) {
+      const parsed = parseError(err);
+      setError(parsed);
+      throw err;
+    }
+  };
+
+  const handlePasswordResetConfirm = async (email: string, code: string, new_password: string) => {
+    setError('');
+    try {
+      await api.post('/password-reset/confirm', { email, code, new_password });
+      showToast('Senha redefinida com sucesso! Faça login com a nova senha.', 'success');
+    } catch (err) {
+      const parsed = parseError(err);
+      setError(parsed);
+      throw err;
+    }
+  };
+
   return (
     <>
       <AuthForm
         onLogin={handleLogin}
         onRegisterInitiate={handleRegisterInitiate}
         onRegisterConfirm={handleRegisterConfirm}
+        onPasswordResetInitiate={handlePasswordResetInitiate}
+        onPasswordResetConfirm={handlePasswordResetConfirm}
         error={error}
         clearError={() => setError('')}
       />
